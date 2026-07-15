@@ -1,0 +1,347 @@
+/* Pulse — Live Performance Overlay */
+
+#pulse-overlay-root {
+	position: fixed;
+	right: 16px;
+	bottom: 16px;
+	z-index: 2147483000;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 8px;
+	font: 12px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+	color: #e8eaef;
+	-webkit-font-smoothing: antialiased;
+}
+
+#pulse-overlay-root.po-hidden {
+	display: none;
+}
+
+/* --- Pill --- */
+
+#pulse-overlay-root .po-pill {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	padding: 7px 13px;
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	border-radius: 999px;
+	background: rgba(17, 19, 24, 0.92);
+	color: #e8eaef;
+	font: inherit;
+	cursor: pointer;
+	box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+	backdrop-filter: blur(8px);
+	-webkit-backdrop-filter: blur(8px);
+	transition: transform 0.12s ease;
+}
+
+#pulse-overlay-root .po-pill:hover {
+	transform: translateY(-1px);
+}
+
+#pulse-overlay-root .po-dot {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: #6b7280;
+}
+
+/* --- Panel --- */
+
+#pulse-overlay-root .po-panel {
+	display: none;
+	width: 320px;
+	max-height: min(70vh, 640px);
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	padding: 4px 0 2px;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	border-radius: 14px;
+	background: rgba(17, 19, 24, 0.94);
+	box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
+}
+
+#pulse-overlay-root .po-panel.open {
+	display: block;
+}
+
+#pulse-overlay-root .po-section {
+	padding: 8px 14px 6px;
+}
+
+#pulse-overlay-root .po-section + .po-section {
+	border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+#pulse-overlay-root .po-section-title {
+	margin-bottom: 4px;
+	font-size: 10px;
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: #8b93a3;
+}
+
+#pulse-overlay-root .po-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	gap: 12px;
+	padding: 2px 0;
+}
+
+#pulse-overlay-root .po-label {
+	color: #aab2c0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+#pulse-overlay-root .po-value {
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+}
+
+/* --- Grades --- */
+
+#pulse-overlay-root .good {
+	color: #3ddc84;
+}
+
+#pulse-overlay-root .warn {
+	color: #ffb020;
+}
+
+#pulse-overlay-root .poor {
+	color: #ff5d5d;
+}
+
+#pulse-overlay-root .po-dot.good {
+	background: #3ddc84;
+}
+
+#pulse-overlay-root .po-dot.warn {
+	background: #ffb020;
+}
+
+#pulse-overlay-root .po-dot.poor {
+	background: #ff5d5d;
+}
+
+/* --- Component badges --- */
+
+#pulse-overlay-root .po-badge {
+	display: inline-block;
+	margin-right: 6px;
+	padding: 0 5px;
+	border-radius: 4px;
+	font-size: 9px;
+	font-style: normal;
+	line-height: 15px;
+	vertical-align: 1px;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+}
+
+#pulse-overlay-root .po-badge-plugin {
+	background: rgba(96, 165, 250, 0.18);
+	color: #7cb4fb;
+}
+
+#pulse-overlay-root .po-badge-theme {
+	background: rgba(192, 132, 252, 0.18);
+	color: #c99bfa;
+}
+
+#pulse-overlay-root .po-badge-mu-plugin {
+	background: rgba(45, 212, 191, 0.18);
+	color: #55d6c2;
+}
+
+#pulse-overlay-root .po-badge-core {
+	background: rgba(148, 163, 184, 0.18);
+	color: #9aa6b8;
+}
+
+#pulse-overlay-root .po-badge-main {
+	background: rgba(61, 220, 132, 0.16);
+	color: #4fd694;
+}
+
+#pulse-overlay-root .po-badge-query {
+	background: rgba(148, 163, 184, 0.16);
+	color: #9aa6b8;
+}
+
+#pulse-overlay-root .po-badge-hidden {
+	background: rgba(213, 176, 106, 0.16);
+	color: #d5b06a;
+}
+
+#pulse-overlay-root .po-badge-ajax {
+	background: rgba(251, 191, 36, 0.16);
+	color: #e8bf5a;
+}
+
+#pulse-overlay-root .po-badge-rest {
+	background: rgba(74, 222, 128, 0.16);
+	color: #6cd792;
+}
+
+/* --- Queries --- */
+
+#pulse-overlay-root .po-query {
+	display: flex;
+	gap: 8px;
+	padding: 3px 0;
+	align-items: baseline;
+}
+
+#pulse-overlay-root .po-query-time {
+	flex: 0 0 auto;
+	font-variant-numeric: tabular-nums;
+}
+
+#pulse-overlay-root .po-query-src {
+	flex: 0 1 auto;
+	max-width: 88px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+#pulse-overlay-root .po-src-plugin {
+	color: #7cb4fb;
+}
+
+#pulse-overlay-root .po-src-theme {
+	color: #c99bfa;
+}
+
+#pulse-overlay-root .po-src-mu-plugin {
+	color: #55d6c2;
+}
+
+#pulse-overlay-root .po-src-core {
+	color: #9aa6b8;
+}
+
+#pulse-overlay-root .po-query-sql {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	color: #8b93a3;
+}
+
+/* --- Expandable details (used by add-on sections) --- */
+
+#pulse-overlay-root .po-clickable {
+	cursor: pointer;
+}
+
+#pulse-overlay-root .po-clickable:hover .po-label {
+	color: #e8eaef;
+}
+
+#pulse-overlay-root .po-detail {
+	display: none;
+	padding: 2px 0 6px;
+	color: #8b93a3;
+	font-size: 11px;
+}
+
+#pulse-overlay-root .po-detail.open {
+	display: block;
+}
+
+#pulse-overlay-root .po-detail .po-sql {
+	margin-top: 3px;
+	padding: 5px 7px;
+	max-height: 130px;
+	overflow-y: auto;
+	border-radius: 6px;
+	background: rgba(255, 255, 255, 0.05);
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+/* --- Expandable details (used by core and add-ons) --- */
+
+#pulse-overlay-root .po-clickable {
+	cursor: pointer;
+}
+
+#pulse-overlay-root .po-detail {
+	display: none;
+	padding: 2px 0 6px;
+	color: #8b93a3;
+	font-size: 11px;
+	word-break: break-word;
+}
+
+#pulse-overlay-root .po-detail.open {
+	display: block;
+}
+
+#pulse-overlay-root .po-detail > div {
+	padding: 1px 0;
+}
+
+#pulse-overlay-root .po-sql {
+	white-space: pre-wrap;
+	word-break: break-word;
+	max-height: 140px;
+	overflow-y: auto;
+	margin-top: 2px;
+	color: #8b93a3;
+}
+
+/* --- Misc --- */
+
+#pulse-overlay-root .po-tl-delta {
+	color: #8b93a3;
+	font-size: 11px;
+}
+
+#pulse-overlay-root .po-tl-delta.warn {
+	color: #ffb020;
+}
+
+#pulse-overlay-root .po-tl-delta.poor {
+	color: #ff5d5d;
+}
+
+#pulse-overlay-root .po-env-diff {
+	padding: 2px 0 4px;
+	font-style: normal;
+	color: #d5b06a;
+}
+
+#pulse-overlay-root .po-hint {
+	padding: 6px 14px;
+	color: #8b93a3;
+	font-size: 11px;
+	font-style: italic;
+}
+
+#pulse-overlay-root .po-footer {
+	padding: 6px 14px 8px;
+	border-top: 1px solid rgba(255, 255, 255, 0.07);
+	color: #6b7280;
+	font-size: 10px;
+	text-align: right;
+}
+
+/* Admin bar icon */
+
+#wpadminbar #wp-admin-bar-pulse-overlay .ab-icon:before {
+	content: '\f311';
+	top: 2px;
+}
+
+/* Never let the host theme's light background make us unreadable —
+   the palette is intentionally dark-only. */

@@ -1,0 +1,44 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Pulse — Live Performance Overlay 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pulse-overlay\n"
+"Last-Translator: Arvexa <hello@arvexa.ru>\n"
+"Language-Team: Russian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-07-15T00:42:36+03:00\n"
+"PO-Revision-Date: 2026-07-15 01:00+0300\n"
+"Language: ru_RU\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: pulse-overlay\n"
+
+#. Plugin Name of the plugin
+#: pulse-overlay.php
+msgid "Pulse — Live Performance Overlay"
+msgstr "Pulse — живая панель производительности"
+
+#. Plugin URI of the plugin
+#: pulse-overlay.php
+msgid "https://plugins.arvexa.ru/pulse.html"
+msgstr "https://plugins.arvexa.ru/pulse.html"
+
+#. Description of the plugin
+#: pulse-overlay.php
+msgid "A live on-page performance overlay for admins: PHP time, SQL queries attributed per plugin, memory, autoload size, Web Vitals (LCP / CLS / INP / TTFB), DOM size and network cost."
+msgstr "Живой оверлей производительности для администраторов: время PHP, SQL-запросы с привязкой к плагину, память, размер autoload, Web Vitals (LCP / CLS / INP / TTFB), размер DOM и сетевая стоимость страницы."
+
+#. Author of the plugin
+#: pulse-overlay.php
+msgid "Arvexa"
+msgstr "Arvexa"
+
+#. Author URI of the plugin
+#: pulse-overlay.php
+msgid "https://arvexa.ru"
+msgstr "https://arvexa.ru"
+
+#: includes/class-pulse-collector.php:117
+msgid "Toggle the performance overlay"
+msgstr "Включить/выключить оверлей производительности"
