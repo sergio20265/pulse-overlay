@@ -2,10 +2,10 @@
 /**
  * Cleanup on uninstall: drop stored samples and environment fingerprints.
  *
- * @package Pulse_Overlay
+ * @package Arvexa_Performance_Overlay
  */
 
 defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
 
-delete_option( 'pulse_overlay_samples' );
-delete_option( 'pulse_overlay_envs' );
+delete_option( 'arvexa_performance_overlay_samples' );
+delete_option( 'arvexa_performance_overlay_envs' );

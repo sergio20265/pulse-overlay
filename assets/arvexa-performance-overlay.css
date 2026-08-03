@@ -1,6 +1,6 @@
-/* Pulse — Live Performance Overlay */
+/* Arvexa Performance Overlay */
 
-#pulse-overlay-root {
+#arvexa-performance-overlay-root {
 	position: fixed;
 	right: 16px;
 	bottom: 16px;
@@ -14,13 +14,13 @@
 	-webkit-font-smoothing: antialiased;
 }
 
-#pulse-overlay-root.po-hidden {
+#arvexa-performance-overlay-root.po-hidden {
 	display: none;
 }
 
 /* --- Pill --- */
 
-#pulse-overlay-root .po-pill {
+#arvexa-performance-overlay-root .po-pill {
 	display: inline-flex;
 	align-items: center;
 	gap: 7px;
@@ -37,11 +37,11 @@
 	transition: transform 0.12s ease;
 }
 
-#pulse-overlay-root .po-pill:hover {
+#arvexa-performance-overlay-root .po-pill:hover {
 	transform: translateY(-1px);
 }
 
-#pulse-overlay-root .po-dot {
+#arvexa-performance-overlay-root .po-dot {
 	width: 8px;
 	height: 8px;
 	border-radius: 50%;
@@ -50,7 +50,7 @@
 
 /* --- Panel --- */
 
-#pulse-overlay-root .po-panel {
+#arvexa-performance-overlay-root .po-panel {
 	display: none;
 	width: 320px;
 	max-height: min(70vh, 640px);
@@ -65,19 +65,19 @@
 	-webkit-backdrop-filter: blur(10px);
 }
 
-#pulse-overlay-root .po-panel.open {
+#arvexa-performance-overlay-root .po-panel.open {
 	display: block;
 }
 
-#pulse-overlay-root .po-section {
+#arvexa-performance-overlay-root .po-section {
 	padding: 8px 14px 6px;
 }
 
-#pulse-overlay-root .po-section + .po-section {
+#arvexa-performance-overlay-root .po-section + .po-section {
 	border-top: 1px solid rgba(255, 255, 255, 0.07);
 }
 
-#pulse-overlay-root .po-section-title {
+#arvexa-performance-overlay-root .po-section-title {
 	margin-bottom: 4px;
 	font-size: 10px;
 	font-weight: 600;
@@ -86,7 +86,7 @@
 	color: #8b93a3;
 }
 
-#pulse-overlay-root .po-row {
+#arvexa-performance-overlay-root .po-row {
 	display: flex;
 	justify-content: space-between;
 	align-items: baseline;
@@ -94,47 +94,47 @@
 	padding: 2px 0;
 }
 
-#pulse-overlay-root .po-label {
+#arvexa-performance-overlay-root .po-label {
 	color: #aab2c0;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
 
-#pulse-overlay-root .po-value {
+#arvexa-performance-overlay-root .po-value {
 	font-variant-numeric: tabular-nums;
 	white-space: nowrap;
 }
 
 /* --- Grades --- */
 
-#pulse-overlay-root .good {
+#arvexa-performance-overlay-root .good {
 	color: #3ddc84;
 }
 
-#pulse-overlay-root .warn {
+#arvexa-performance-overlay-root .warn {
 	color: #ffb020;
 }
 
-#pulse-overlay-root .poor {
+#arvexa-performance-overlay-root .poor {
 	color: #ff5d5d;
 }
 
-#pulse-overlay-root .po-dot.good {
+#arvexa-performance-overlay-root .po-dot.good {
 	background: #3ddc84;
 }
 
-#pulse-overlay-root .po-dot.warn {
+#arvexa-performance-overlay-root .po-dot.warn {
 	background: #ffb020;
 }
 
-#pulse-overlay-root .po-dot.poor {
+#arvexa-performance-overlay-root .po-dot.poor {
 	background: #ff5d5d;
 }
 
 /* --- Component badges --- */
 
-#pulse-overlay-root .po-badge {
+#arvexa-performance-overlay-root .po-badge {
 	display: inline-block;
 	margin-right: 6px;
 	padding: 0 5px;
@@ -147,66 +147,66 @@
 	letter-spacing: 0.04em;
 }
 
-#pulse-overlay-root .po-badge-plugin {
+#arvexa-performance-overlay-root .po-badge-plugin {
 	background: rgba(96, 165, 250, 0.18);
 	color: #7cb4fb;
 }
 
-#pulse-overlay-root .po-badge-theme {
+#arvexa-performance-overlay-root .po-badge-theme {
 	background: rgba(192, 132, 252, 0.18);
 	color: #c99bfa;
 }
 
-#pulse-overlay-root .po-badge-mu-plugin {
+#arvexa-performance-overlay-root .po-badge-mu-plugin {
 	background: rgba(45, 212, 191, 0.18);
 	color: #55d6c2;
 }
 
-#pulse-overlay-root .po-badge-core {
+#arvexa-performance-overlay-root .po-badge-core {
 	background: rgba(148, 163, 184, 0.18);
 	color: #9aa6b8;
 }
 
-#pulse-overlay-root .po-badge-main {
+#arvexa-performance-overlay-root .po-badge-main {
 	background: rgba(61, 220, 132, 0.16);
 	color: #4fd694;
 }
 
-#pulse-overlay-root .po-badge-query {
+#arvexa-performance-overlay-root .po-badge-query {
 	background: rgba(148, 163, 184, 0.16);
 	color: #9aa6b8;
 }
 
-#pulse-overlay-root .po-badge-hidden {
+#arvexa-performance-overlay-root .po-badge-hidden {
 	background: rgba(213, 176, 106, 0.16);
 	color: #d5b06a;
 }
 
-#pulse-overlay-root .po-badge-ajax {
+#arvexa-performance-overlay-root .po-badge-ajax {
 	background: rgba(251, 191, 36, 0.16);
 	color: #e8bf5a;
 }
 
-#pulse-overlay-root .po-badge-rest {
+#arvexa-performance-overlay-root .po-badge-rest {
 	background: rgba(74, 222, 128, 0.16);
 	color: #6cd792;
 }
 
 /* --- Queries --- */
 
-#pulse-overlay-root .po-query {
+#arvexa-performance-overlay-root .po-query {
 	display: flex;
 	gap: 8px;
 	padding: 3px 0;
 	align-items: baseline;
 }
 
-#pulse-overlay-root .po-query-time {
+#arvexa-performance-overlay-root .po-query-time {
 	flex: 0 0 auto;
 	font-variant-numeric: tabular-nums;
 }
 
-#pulse-overlay-root .po-query-src {
+#arvexa-performance-overlay-root .po-query-src {
 	flex: 0 1 auto;
 	max-width: 88px;
 	overflow: hidden;
@@ -214,23 +214,23 @@
 	white-space: nowrap;
 }
 
-#pulse-overlay-root .po-src-plugin {
+#arvexa-performance-overlay-root .po-src-plugin {
 	color: #7cb4fb;
 }
 
-#pulse-overlay-root .po-src-theme {
+#arvexa-performance-overlay-root .po-src-theme {
 	color: #c99bfa;
 }
 
-#pulse-overlay-root .po-src-mu-plugin {
+#arvexa-performance-overlay-root .po-src-mu-plugin {
 	color: #55d6c2;
 }
 
-#pulse-overlay-root .po-src-core {
+#arvexa-performance-overlay-root .po-src-core {
 	color: #9aa6b8;
 }
 
-#pulse-overlay-root .po-query-sql {
+#arvexa-performance-overlay-root .po-query-sql {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
@@ -239,26 +239,26 @@
 
 /* --- Expandable details (used by add-on sections) --- */
 
-#pulse-overlay-root .po-clickable {
+#arvexa-performance-overlay-root .po-clickable {
 	cursor: pointer;
 }
 
-#pulse-overlay-root .po-clickable:hover .po-label {
+#arvexa-performance-overlay-root .po-clickable:hover .po-label {
 	color: #e8eaef;
 }
 
-#pulse-overlay-root .po-detail {
+#arvexa-performance-overlay-root .po-detail {
 	display: none;
 	padding: 2px 0 6px;
 	color: #8b93a3;
 	font-size: 11px;
 }
 
-#pulse-overlay-root .po-detail.open {
+#arvexa-performance-overlay-root .po-detail.open {
 	display: block;
 }
 
-#pulse-overlay-root .po-detail .po-sql {
+#arvexa-performance-overlay-root .po-detail .po-sql {
 	margin-top: 3px;
 	padding: 5px 7px;
 	max-height: 130px;
@@ -271,11 +271,11 @@
 
 /* --- Expandable details (used by core and add-ons) --- */
 
-#pulse-overlay-root .po-clickable {
+#arvexa-performance-overlay-root .po-clickable {
 	cursor: pointer;
 }
 
-#pulse-overlay-root .po-detail {
+#arvexa-performance-overlay-root .po-detail {
 	display: none;
 	padding: 2px 0 6px;
 	color: #8b93a3;
@@ -283,15 +283,15 @@
 	word-break: break-word;
 }
 
-#pulse-overlay-root .po-detail.open {
+#arvexa-performance-overlay-root .po-detail.open {
 	display: block;
 }
 
-#pulse-overlay-root .po-detail > div {
+#arvexa-performance-overlay-root .po-detail > div {
 	padding: 1px 0;
 }
 
-#pulse-overlay-root .po-sql {
+#arvexa-performance-overlay-root .po-sql {
 	white-space: pre-wrap;
 	word-break: break-word;
 	max-height: 140px;
@@ -302,33 +302,33 @@
 
 /* --- Misc --- */
 
-#pulse-overlay-root .po-tl-delta {
+#arvexa-performance-overlay-root .po-tl-delta {
 	color: #8b93a3;
 	font-size: 11px;
 }
 
-#pulse-overlay-root .po-tl-delta.warn {
+#arvexa-performance-overlay-root .po-tl-delta.warn {
 	color: #ffb020;
 }
 
-#pulse-overlay-root .po-tl-delta.poor {
+#arvexa-performance-overlay-root .po-tl-delta.poor {
 	color: #ff5d5d;
 }
 
-#pulse-overlay-root .po-env-diff {
+#arvexa-performance-overlay-root .po-env-diff {
 	padding: 2px 0 4px;
 	font-style: normal;
 	color: #d5b06a;
 }
 
-#pulse-overlay-root .po-hint {
+#arvexa-performance-overlay-root .po-hint {
 	padding: 6px 14px;
 	color: #8b93a3;
 	font-size: 11px;
 	font-style: italic;
 }
 
-#pulse-overlay-root .po-footer {
+#arvexa-performance-overlay-root .po-footer {
 	padding: 6px 14px 8px;
 	border-top: 1px solid rgba(255, 255, 255, 0.07);
 	color: #6b7280;
@@ -338,7 +338,7 @@
 
 /* Admin bar icon */
 
-#wpadminbar #wp-admin-bar-pulse-overlay .ab-icon:before {
+#wpadminbar #wp-admin-bar-arvexa-performance-overlay .ab-icon:before {
 	content: '\f311';
 	top: 2px;
 }

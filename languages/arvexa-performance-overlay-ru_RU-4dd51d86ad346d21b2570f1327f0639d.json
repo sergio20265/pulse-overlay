@@ -1,7 +1,7 @@
 {
     "translation-revision-date": "2026-07-15 01:00+0300",
     "generator": "WP-CLI\/2.12.0",
-    "source": "assets\/pulse-overlay.js",
+    "source": "assets\/arvexa-performance-overlay.js",
     "domain": "messages",
     "locale_data": {
         "messages": {
@@ -151,8 +151,8 @@
             "PHP %1$s \u00b7 WP %2$s": [
                 "PHP %1$s \u00b7 WP %2$s"
             ],
-            "Pulse \u2014 performance overlay": [
-                "Pulse \u2014 \u043e\u0432\u0435\u0440\u043b\u0435\u0439 \u043f\u0440\u043e\u0438\u0437\u0432\u043e\u0434\u0438\u0442\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u0438"
+            "Arvexa Performance Overlay \u2014 performance overlay": [
+                "Arvexa Performance Overlay \u2014 \u043e\u0432\u0435\u0440\u043b\u0435\u0439 \u043f\u0440\u043e\u0438\u0437\u0432\u043e\u0434\u0438\u0442\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u0438"
             ]
         }
     }

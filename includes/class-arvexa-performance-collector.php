@@ -2,14 +2,14 @@
 /**
  * Collects server-side metrics and prints them as a JSON blob for the overlay.
  *
- * @package Pulse_Overlay
+ * @package Arvexa_Performance_Overlay
  */
 
 defined( 'ABSPATH' ) || exit;
 
-class Pulse_Collector {
+class Arvexa_Performance_Collector {
 
-	/** @var Pulse_Collector|null */
+	/** @var Arvexa_Performance_Collector|null */
 	private static $instance = null;
 
 	/** @var bool Whether our overlay assets were enqueued on this request. */
@@ -61,13 +61,8 @@ class Pulse_Collector {
 
 		// PHP_INT_MAX so we run after everything else and count as many
 		// queries as possible. Queries fired after this point are missed.
-		add_action( 'wp_print_footer_scripts', array( $this, 'print_data' ), PHP_INT_MAX );
-		add_action( 'admin_print_footer_scripts', array( $this, 'print_data' ), PHP_INT_MAX );
-
-		// Safety net: if a theme or optimizer prevented the footer hook from
-		// printing, emit the blob on shutdown (browsers parse trailing
-		// content into <body>, same trick Query Monitor uses).
-		add_action( 'shutdown', array( $this, 'print_data_fallback' ), 0 );
+		add_action( 'wp_print_footer_scripts', array( $this, 'print_data' ), 1 );
+		add_action( 'admin_print_footer_scripts', array( $this, 'print_data' ), 1 );
 
 		add_action( 'admin_bar_menu', array( $this, 'admin_bar_node' ), 100 );
 	}
@@ -82,7 +77,7 @@ class Pulse_Collector {
 		 *
 		 * @param string $capability Default 'manage_options'.
 		 */
-		$cap = apply_filters( 'pulse_overlay_capability', 'manage_options' );
+		$cap = apply_filters( 'arvexa_performance_overlay_capability', 'manage_options' );
 		return is_user_logged_in() && current_user_can( $cap );
 	}
 
@@ -93,28 +88,28 @@ class Pulse_Collector {
 	public function enqueue_assets() {
 		$this->assets_enqueued = true;
 		wp_enqueue_style(
-			'pulse-overlay',
-			PULSE_OVERLAY_URL . 'assets/pulse-overlay.css',
+			'arvexa-performance-overlay',
+			ARVEXA_PERFORMANCE_OVERLAY_URL . 'assets/arvexa-performance-overlay.css',
 			array(),
-			PULSE_OVERLAY_VERSION
+			ARVEXA_PERFORMANCE_OVERLAY_VERSION
 		);
 		wp_enqueue_script(
-			'pulse-overlay',
-			PULSE_OVERLAY_URL . 'assets/pulse-overlay.js',
+			'arvexa-performance-overlay',
+			ARVEXA_PERFORMANCE_OVERLAY_URL . 'assets/arvexa-performance-overlay.js',
 			array( 'wp-i18n' ),
-			PULSE_OVERLAY_VERSION,
+			ARVEXA_PERFORMANCE_OVERLAY_VERSION,
 			true
 		);
-		wp_set_script_translations( 'pulse-overlay', 'pulse-overlay', PULSE_OVERLAY_DIR . 'languages' );
+		wp_set_script_translations( 'arvexa-performance-overlay', 'arvexa-performance-overlay', ARVEXA_PERFORMANCE_OVERLAY_DIR . 'languages' );
 	}
 
 	public function admin_bar_node( $bar ) {
 		$bar->add_node(
 			array(
-				'id'    => 'pulse-overlay',
-				'title' => '<span class="ab-icon dashicons dashicons-performance" style="top:2px;"></span><span class="ab-label">Pulse</span>',
+				'id'    => 'arvexa-performance-overlay',
+				'title' => '<span class="ab-icon dashicons dashicons-performance" style="top:2px;"></span><span class="ab-label">Arvexa Performance</span>',
 				'href'  => '#',
-				'meta'  => array( 'title' => __( 'Toggle the performance overlay', 'pulse-overlay' ) ),
+				'meta'  => array( 'title' => __( 'Toggle the performance overlay', 'arvexa-performance-overlay' ) ),
 			)
 		);
 	}
@@ -129,7 +124,7 @@ class Pulse_Collector {
 		if ( ! is_array( $data ) ) {
 			$data = array();
 		}
-		$data['pulse_component'] = $this->component_from_backtrace();
+		$data['arvexa_performance_component'] = $this->component_from_backtrace();
 		return $data;
 	}
 
@@ -155,7 +150,7 @@ class Pulse_Collector {
 				$slug = $this->first_segment( substr( $file, strlen( $this->plugin_dir ) + 1 ) );
 				// Skip ourselves and add-ons: measurement callbacks sit on
 				// top of every backtrace and must never claim the cost.
-				if ( 'pulse-overlay' === $slug || 'pulse-pro' === $slug ) {
+			if ( 'arvexa-performance-overlay' === $slug || 'arvexa-performance-pro' === $slug ) {
 					continue;
 				}
 				return 'plugin:' . $slug;
@@ -189,7 +184,7 @@ class Pulse_Collector {
 		 *
 		 * @param array $data Collected metrics.
 		 */
-		$data = apply_filters( 'pulse_overlay_data', $this->collect() );
+		$data = apply_filters( 'arvexa_performance_overlay_data', $this->collect() );
 
 		$json = wp_json_encode( $data );
 		if ( false === $json ) {
@@ -199,22 +194,11 @@ class Pulse_Collector {
 		// json_encode escapes "/" by default, so "</script>" cannot appear
 		// inside the payload. The classic-script duplicate survives HTML
 		// minifiers that strip type="application/json" blocks.
-		echo '<script type="application/json" id="pulse-overlay-data">' . $json . '</script>' . "\n";
-		echo '<script>window.__pulseData = ' . $json . ';</script>' . "\n";
-	}
-
-	public function print_data_fallback() {
-		if ( ! $this->assets_enqueued ) {
-			return;
-		}
-		if ( wp_doing_ajax() || wp_doing_cron() || ( function_exists( 'wp_is_json_request' ) && wp_is_json_request() ) ) {
-			return;
-		}
-		if ( ( defined( 'REST_REQUEST' ) && REST_REQUEST ) || ( defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ) || is_feed() ) {
-			return;
-		}
-		// No-op if the footer hook already printed (static guard inside).
-		$this->print_data();
+		wp_add_inline_script(
+			'arvexa-performance-overlay',
+			'window.__arvexaPerformanceOverlayData = ' . $json . ';',
+			'before'
+		);
 	}
 
 	private function collect() {
@@ -240,7 +224,7 @@ class Pulse_Collector {
 			foreach ( $wpdb->queries as $q ) {
 				$time      = isset( $q[1] ) ? (float) $q[1] : 0.0;
 				$custom    = isset( $q[4] ) && is_array( $q[4] ) ? $q[4] : array();
-				$component = isset( $custom['pulse_component'] ) ? $custom['pulse_component'] : 'core';
+				$component = isset( $custom['arvexa_performance_component'] ) ? $custom['arvexa_performance_component'] : 'core';
 
 				$total += $time;
 

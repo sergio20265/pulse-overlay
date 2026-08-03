@@ -2,8 +2,8 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Pulse — Live Performance Overlay 1.0.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pulse-overlay\n"
+"Project-Id-Version: Arvexa Performance Overlay 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/arvexa-performance-overlay\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -12,227 +12,227 @@ msgstr ""
 "POT-Creation-Date: 2026-07-15T00:42:36+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
-"X-Domain: pulse-overlay\n"
+"X-Domain: arvexa-performance-overlay\n"
 
 #. Plugin Name of the plugin
-#: pulse-overlay.php
-msgid "Pulse — Live Performance Overlay"
+#: arvexa-performance-overlay.php
+msgid "Arvexa Performance Overlay"
 msgstr ""
 
 #. Plugin URI of the plugin
-#: pulse-overlay.php
-msgid "https://plugins.arvexa.ru/pulse.html"
+#: arvexa-performance-overlay.php
+msgid "https://plugins.arvexa.ru/performance.html"
 msgstr ""
 
 #. Description of the plugin
-#: pulse-overlay.php
+#: arvexa-performance-overlay.php
 msgid "A live on-page performance overlay for admins: PHP time, SQL queries attributed per plugin, memory, autoload size, Web Vitals (LCP / CLS / INP / TTFB), DOM size and network cost."
 msgstr ""
 
 #. Author of the plugin
-#: pulse-overlay.php
+#: arvexa-performance-overlay.php
 msgid "Arvexa"
 msgstr ""
 
 #. Author URI of the plugin
-#: pulse-overlay.php
+#: arvexa-performance-overlay.php
 msgid "https://arvexa.ru"
 msgstr ""
 
-#: includes/class-pulse-collector.php:117
+#: includes/class-arvexa-performance-collector.php:117
 msgid "Toggle the performance overlay"
 msgstr ""
 
-#: assets/pulse-overlay.js:449
+#: assets/arvexa-performance-overlay.js:449
 msgid "Samples"
 msgstr ""
 
-#: assets/pulse-overlay.js:452
+#: assets/arvexa-performance-overlay.js:452
 msgid "History"
 msgstr ""
 
-#: assets/pulse-overlay.js:462
+#: assets/arvexa-performance-overlay.js:462
 msgid "Δ PHP time"
 msgstr ""
 
-#: assets/pulse-overlay.js:463
+#: assets/arvexa-performance-overlay.js:463
 msgid "Δ SQL queries"
 msgstr ""
 
-#: assets/pulse-overlay.js:464
+#: assets/arvexa-performance-overlay.js:464
 msgid "Δ SQL time"
 msgstr ""
 
-#: assets/pulse-overlay.js:465
+#: assets/arvexa-performance-overlay.js:465
 msgid "Δ LCP"
 msgstr ""
 
-#: assets/pulse-overlay.js:466
+#: assets/arvexa-performance-overlay.js:466
 msgid "Δ Transferred"
 msgstr ""
 
-#: assets/pulse-overlay.js:476
+#: assets/arvexa-performance-overlay.js:476
 msgid "median now vs before the change"
 msgstr ""
 
-#: assets/pulse-overlay.js:479
+#: assets/arvexa-performance-overlay.js:479
 msgid "History · since env change"
 msgstr ""
 
-#: assets/pulse-overlay.js:532
+#: assets/arvexa-performance-overlay.js:532
 msgid "WordPress core"
 msgstr ""
 
-#: assets/pulse-overlay.js:603
+#: assets/arvexa-performance-overlay.js:603
 msgid "PHP time"
 msgstr ""
 
-#: assets/pulse-overlay.js:605
+#: assets/arvexa-performance-overlay.js:605
 msgid "SQL"
 msgstr ""
 
-#: assets/pulse-overlay.js:608
+#: assets/arvexa-performance-overlay.js:608
 msgid "Enable the overlay and reload to log query timings"
 msgstr ""
 
-#: assets/pulse-overlay.js:610
+#: assets/arvexa-performance-overlay.js:610
 msgid "Memory"
 msgstr ""
 
-#: assets/pulse-overlay.js:611
+#: assets/arvexa-performance-overlay.js:611
 msgid "Enqueued"
 msgstr ""
 
-#: assets/pulse-overlay.js:614
+#: assets/arvexa-performance-overlay.js:614
 msgid "Autoload"
 msgstr ""
 
-#: assets/pulse-overlay.js:617
+#: assets/arvexa-performance-overlay.js:617
 msgid "Options loaded from the DB on every request"
 msgstr ""
 
-#: assets/pulse-overlay.js:623
+#: assets/arvexa-performance-overlay.js:623
 msgid "Longest phase"
 msgstr ""
 
-#: assets/pulse-overlay.js:626
+#: assets/arvexa-performance-overlay.js:626
 msgid "The lifecycle phase that ate the biggest share of PHP time"
 msgstr ""
 
-#: assets/pulse-overlay.js:629
+#: assets/arvexa-performance-overlay.js:629
 msgid "Server"
 msgstr ""
 
-#: assets/pulse-overlay.js:633
+#: assets/arvexa-performance-overlay.js:633
 msgid "Query log is off — reload the page to capture per-plugin SQL timings."
 msgstr ""
 
-#: assets/pulse-overlay.js:655
+#: assets/arvexa-performance-overlay.js:655
 msgid "Total"
 msgstr ""
 
-#: assets/pulse-overlay.js:656
+#: assets/arvexa-performance-overlay.js:656
 msgid "Time spent inside wp_remote_* during page generation"
 msgstr ""
 
-#: assets/pulse-overlay.js:657
+#: assets/arvexa-performance-overlay.js:657
 msgid "Remote HTTP"
 msgstr ""
 
-#: assets/pulse-overlay.js:667
+#: assets/arvexa-performance-overlay.js:667
 msgid "Autoload top"
 msgstr ""
 
-#: assets/pulse-overlay.js:670
+#: assets/arvexa-performance-overlay.js:670
 msgid "No server data on this page."
 msgstr ""
 
-#: assets/pulse-overlay.js:675
+#: assets/arvexa-performance-overlay.js:675
 msgid "Network"
 msgstr ""
 
-#: assets/pulse-overlay.js:676
+#: assets/arvexa-performance-overlay.js:676
 msgid "TTFB"
 msgstr ""
 
-#: assets/pulse-overlay.js:677
+#: assets/arvexa-performance-overlay.js:677
 msgid "Requests"
 msgstr ""
 
-#: assets/pulse-overlay.js:679
+#: assets/arvexa-performance-overlay.js:679
 msgid "Transferred"
 msgstr ""
 
-#: assets/pulse-overlay.js:680
+#: assets/arvexa-performance-overlay.js:680
 msgid "from cache"
 msgstr ""
 
-#: assets/pulse-overlay.js:682
+#: assets/arvexa-performance-overlay.js:682
 msgid "Network bytes; cached responses count as 0"
 msgstr ""
 
-#: assets/pulse-overlay.js:707
+#: assets/arvexa-performance-overlay.js:707
 msgid "AJAX / REST"
 msgstr ""
 
-#: assets/pulse-overlay.js:712
+#: assets/arvexa-performance-overlay.js:712
 msgid "Rendering"
 msgstr ""
 
-#: assets/pulse-overlay.js:713
+#: assets/arvexa-performance-overlay.js:713
 msgid "LCP"
 msgstr ""
 
-#: assets/pulse-overlay.js:714
+#: assets/arvexa-performance-overlay.js:714
 msgid "LCP element"
 msgstr ""
 
-#: assets/pulse-overlay.js:714
+#: assets/arvexa-performance-overlay.js:714
 msgid "Largest Contentful Paint element"
 msgstr ""
 
-#: assets/pulse-overlay.js:715
+#: assets/arvexa-performance-overlay.js:715
 msgid "CLS"
 msgstr ""
 
-#: assets/pulse-overlay.js:716
+#: assets/arvexa-performance-overlay.js:716
 msgid "INP"
 msgstr ""
 
-#: assets/pulse-overlay.js:716
+#: assets/arvexa-performance-overlay.js:716
 msgid "Worst interaction so far"
 msgstr ""
 
-#: assets/pulse-overlay.js:717
+#: assets/arvexa-performance-overlay.js:717
 msgid "DOM nodes"
 msgstr ""
 
-#: assets/pulse-overlay.js:718
+#: assets/arvexa-performance-overlay.js:718
 msgid "Long tasks"
 msgstr ""
 
-#: assets/pulse-overlay.js:777
+#: assets/arvexa-performance-overlay.js:777
 msgid "Components"
 msgstr ""
 
-#: assets/pulse-overlay.js:791
+#: assets/arvexa-performance-overlay.js:791
 msgid "elapsed · +ms since previous marker"
 msgstr ""
 
-#: assets/pulse-overlay.js:794
+#: assets/arvexa-performance-overlay.js:794
 msgid "Timeline"
 msgstr ""
 
-#: assets/pulse-overlay.js:829
+#: assets/arvexa-performance-overlay.js:829
 msgid "Slowest queries"
 msgstr ""
 
 #. translators: 1: PHP version number, 2: WordPress version number.
-#: assets/pulse-overlay.js:849
+#: assets/arvexa-performance-overlay.js:849
 #, js-format
 msgid "PHP %1$s · WP %2$s"
 msgstr ""
 
-#: assets/pulse-overlay.js:916
-msgid "Pulse — performance overlay"
+#: assets/arvexa-performance-overlay.js:916
+msgid "Arvexa Performance Overlay"
 msgstr ""

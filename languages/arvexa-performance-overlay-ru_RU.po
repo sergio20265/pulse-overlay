@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Pulse — Live Performance Overlay 1.0.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pulse-overlay\n"
+"Project-Id-Version: Arvexa Performance Overlay 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/arvexa-performance-overlay\n"
 "Last-Translator: Arvexa <hello@arvexa.ru>\n"
 "Language-Team: Russian\n"
 "MIME-Version: 1.0\n"
@@ -12,33 +12,33 @@ msgstr ""
 "Language: ru_RU\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: WP-CLI 2.12.0\n"
-"X-Domain: pulse-overlay\n"
+"X-Domain: arvexa-performance-overlay\n"
 
 #. Plugin Name of the plugin
-#: pulse-overlay.php
-msgid "Pulse — Live Performance Overlay"
-msgstr "Pulse — живая панель производительности"
+#: arvexa-performance-overlay.php
+msgid "Arvexa Performance Overlay"
+msgstr "Arvexa Performance Overlay — живая панель производительности"
 
 #. Plugin URI of the plugin
-#: pulse-overlay.php
-msgid "https://plugins.arvexa.ru/pulse.html"
-msgstr "https://plugins.arvexa.ru/pulse.html"
+#: arvexa-performance-overlay.php
+msgid "https://plugins.arvexa.ru/performance.html"
+msgstr "https://plugins.arvexa.ru/performance.html"
 
 #. Description of the plugin
-#: pulse-overlay.php
+#: arvexa-performance-overlay.php
 msgid "A live on-page performance overlay for admins: PHP time, SQL queries attributed per plugin, memory, autoload size, Web Vitals (LCP / CLS / INP / TTFB), DOM size and network cost."
 msgstr "Живой оверлей производительности для администраторов: время PHP, SQL-запросы с привязкой к плагину, память, размер autoload, Web Vitals (LCP / CLS / INP / TTFB), размер DOM и сетевая стоимость страницы."
 
 #. Author of the plugin
-#: pulse-overlay.php
+#: arvexa-performance-overlay.php
 msgid "Arvexa"
 msgstr "Arvexa"
 
 #. Author URI of the plugin
-#: pulse-overlay.php
+#: arvexa-performance-overlay.php
 msgid "https://arvexa.ru"
 msgstr "https://arvexa.ru"
 
-#: includes/class-pulse-collector.php:117
+#: includes/class-arvexa-performance-collector.php:117
 msgid "Toggle the performance overlay"
 msgstr "Включить/выключить оверлей производительности"

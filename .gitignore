@@ -1,0 +1,3 @@
+# Local WordPress.org publish checkout and generated release packages.
+/wordpress-org-svn/
+*.zip

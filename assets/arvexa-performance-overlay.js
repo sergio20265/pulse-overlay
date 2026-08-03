@@ -1,7 +1,7 @@
 /**
- * Pulse — Live Performance Overlay.
+ * Arvexa Performance Overlay.
  *
- * Reads the server-side JSON blob printed by Pulse_Collector, collects
+ * Reads the server-side JSON blob printed by Arvexa_Performance_Collector, collects
  * browser-side metrics (Web Vitals, DOM size, network cost) and renders
  * a floating panel. Everything is wrapped so a failure here can never
  * break the host page.
@@ -9,8 +9,7 @@
 (function () {
 	'use strict';
 
-	var LS_KEY = 'pulseOverlayOpen';
-	var COOKIE = 'pulse_overlay_on';
+	var LS_KEY = 'arvexaPerformanceOverlayOpen';
 
 	// wp-i18n is declared as a script dependency, but guard anyway — this
 	// file must never break the host page even if load order is disturbed.
@@ -63,17 +62,8 @@
 
 	function readServerData() {
 		try {
-			var el = document.getElementById('pulse-overlay-data');
-			if (el) {
-				var parsed = JSON.parse(el.textContent);
-				if (parsed && typeof parsed === 'object') {
-					return parsed;
-				}
-			}
-			// Fallback for HTML minifiers that strip type="application/json"
-			// blocks: the collector also assigns a plain window global.
-			if (window.__pulseData && typeof window.__pulseData === 'object') {
-				return window.__pulseData;
+			if (window.__arvexaPerformanceOverlayData && typeof window.__arvexaPerformanceOverlayData === 'object') {
+				return window.__arvexaPerformanceOverlayData;
 			}
 		} catch (e) {
 			/* fall through */
@@ -186,7 +176,7 @@
 			}
 			var key =
 				(m[1] === 'plugins' ? 'plugin:' : m[1] === 'themes' ? 'theme:' : 'mu-plugin:') + m[2];
-			if (key === 'plugin:pulse-overlay' || key === 'plugin:pulse-pro') {
+			if (key === 'plugin:arvexa-performance-overlay' || key === 'plugin:arvexa-performance-pro') {
 				return;
 			}
 			if (!out.byComponent[key]) {
@@ -204,7 +194,7 @@
 	}
 
 	// ---------------------------------------------------------------------
-	// AJAX / REST spy: patch fetch + XHR, read the X-Pulse server header
+	// AJAX / REST spy: patch fetch + XHR, read the X-Arvexa-Performance server header
 	// ---------------------------------------------------------------------
 
 	var netCalls = [];
@@ -239,7 +229,7 @@
 		if (path.indexOf('admin-ajax.php') !== -1) {
 			var m = /[?&]action=([^&]+)/.exec(qs) || /(?:^|&)action=([^&]+)/.exec(bodyStr || '');
 			var name = m ? decodeURIComponent(m[1]) : 'admin-ajax';
-			if (name === 'pulse_overlay_sample') {
+			if (name === 'arvexa_performance_overlay_sample') {
 				return null; // our own beacon
 			}
 			return { kind: 'ajax', name: name };
@@ -255,7 +245,7 @@
 		return null;
 	}
 
-	function parsePulseHeader(raw) {
+	function parseArvexaPerformanceHeader(raw) {
 		try {
 			return raw ? JSON.parse(raw) : null;
 		} catch (e) {
@@ -289,7 +279,7 @@
 						var started = performance.now();
 						promise.then(
 							function (resp) {
-								finishCall(info, started, resp.status, parsePulseHeader(resp.headers.get('X-Pulse')));
+								finishCall(info, started, resp.status, parseArvexaPerformanceHeader(resp.headers.get('X-Arvexa-Performance')));
 							},
 							function () {
 								finishCall(info, started, 0, null);
@@ -304,19 +294,19 @@
 		var xhrOpen = XMLHttpRequest.prototype.open;
 		var xhrSend = XMLHttpRequest.prototype.send;
 		XMLHttpRequest.prototype.open = function (method, url) {
-			this.__pulseUrl = url;
+			this.__arvexaPerformanceUrl = url;
 			return xhrOpen.apply(this, arguments);
 		};
 		XMLHttpRequest.prototype.send = function (body) {
 			try {
-				var info = requestName(this.__pulseUrl || '', bodyToString(body));
+				var info = requestName(this.__arvexaPerformanceUrl || '', bodyToString(body));
 				if (info) {
 					var xhr = this;
 					var started = performance.now();
 					xhr.addEventListener('loadend', function () {
 						var srv = null;
 						try {
-							srv = parsePulseHeader(xhr.getResponseHeader('X-Pulse'));
+							srv = parseArvexaPerformanceHeader(xhr.getResponseHeader('X-Arvexa-Performance'));
 						} catch (e) { /* cross-origin */ }
 						finishCall(info, started, xhr.status, srv);
 					});
@@ -354,7 +344,7 @@
 				dom: domNodeCount()
 			};
 			navigator.sendBeacon(
-				server.history.ajax + '?action=pulse_overlay_sample',
+				server.history.ajax + '?action=arvexa_performance_overlay_sample',
 				new Blob([JSON.stringify(payload)], { type: 'application/json' })
 			);
 		} catch (e) {
@@ -446,10 +436,10 @@
 			}
 		}
 
-		var html = row(__('Samples', 'pulse-overlay'), String(h.samples.length), '');
+		var html = row(__('Samples', 'arvexa-performance-overlay'), String(h.samples.length), '');
 
 		if (!prevHash) {
-			return section(__('History', 'pulse-overlay'), html);
+			return section(__('History', 'arvexa-performance-overlay'), html);
 		}
 
 		var previous = samples.filter(function (s) { return s.env === prevHash; });
@@ -459,11 +449,11 @@
 		}
 
 		var metrics = [
-			{ key: 'phpTime', label: __('Δ PHP time', 'pulse-overlay'), fmt: secs },
-			{ key: 'sqlCount', label: __('Δ SQL queries', 'pulse-overlay'), fmt: function (v) { return Math.round(v) + ' q'; } },
-			{ key: 'sqlTime', label: __('Δ SQL time', 'pulse-overlay'), fmt: secs },
-			{ key: 'lcp', label: __('Δ LCP', 'pulse-overlay'), fmt: ms },
-			{ key: 'transfer', label: __('Δ Transferred', 'pulse-overlay'), fmt: bytes }
+			{ key: 'phpTime', label: __('Δ PHP time', 'arvexa-performance-overlay'), fmt: secs },
+			{ key: 'sqlCount', label: __('Δ SQL queries', 'arvexa-performance-overlay'), fmt: function (v) { return Math.round(v) + ' q'; } },
+			{ key: 'sqlTime', label: __('Δ SQL time', 'arvexa-performance-overlay'), fmt: secs },
+			{ key: 'lcp', label: __('Δ LCP', 'arvexa-performance-overlay'), fmt: ms },
+			{ key: 'transfer', label: __('Δ Transferred', 'arvexa-performance-overlay'), fmt: bytes }
 		];
 
 		metrics.forEach(function (m) {
@@ -473,10 +463,10 @@
 				return;
 			}
 			var delta = now - was;
-			html += row(m.label, fmtDelta(delta, m.fmt), deltaGrade(delta, was), __('median now vs before the change', 'pulse-overlay'));
+			html += row(m.label, fmtDelta(delta, m.fmt), deltaGrade(delta, was), __('median now vs before the change', 'arvexa-performance-overlay'));
 		});
 
-		return section(__('History · since env change', 'pulse-overlay'), html);
+		return section(__('History · since env change', 'arvexa-performance-overlay'), html);
 	}
 
 	// ---------------------------------------------------------------------
@@ -529,7 +519,7 @@
 	function componentLabel(key) {
 		var i = key.indexOf(':');
 		if (i === -1) {
-			return { badge: 'core', name: __('WordPress core', 'pulse-overlay') };
+			return { badge: 'core', name: __('WordPress core', 'arvexa-performance-overlay') };
 		}
 		return { badge: key.slice(0, i), name: key.slice(i + 1) };
 	}
@@ -600,37 +590,37 @@
 				? grade(server.sql.time, 0.1, 0.5)
 				: grade(server.sql.count, 100, 200);
 			var rows =
-				row(__('PHP time', 'pulse-overlay'), secs(server.phpTime), grade(server.phpTime, 0.5, 1.5)) +
+				row(__('PHP time', 'arvexa-performance-overlay'), secs(server.phpTime), grade(server.phpTime, 0.5, 1.5)) +
 				row(
-					__('SQL', 'pulse-overlay'),
+					__('SQL', 'arvexa-performance-overlay'),
 					sqlValue,
 					sqlGrade,
-					server.sql.logged ? '' : __('Enable the overlay and reload to log query timings', 'pulse-overlay')
+					server.sql.logged ? '' : __('Enable SAVEQUERIES in wp-config.php to log query timings', 'arvexa-performance-overlay')
 				) +
-				row(__('Memory', 'pulse-overlay'), bytes(server.memory) + ' / ' + esc(server.memLimit), grade(server.memory, 33554432, 67108864)) +
-				row(__('Enqueued', 'pulse-overlay'), server.assets.scripts + ' js · ' + server.assets.styles + ' css', '');
+				row(__('Memory', 'arvexa-performance-overlay'), bytes(server.memory) + ' / ' + esc(server.memLimit), grade(server.memory, 33554432, 67108864)) +
+				row(__('Enqueued', 'arvexa-performance-overlay'), server.assets.scripts + ' js · ' + server.assets.styles + ' css', '');
 			if (server.autoload && server.autoload.total) {
 				rows += row(
-					__('Autoload', 'pulse-overlay'),
+					__('Autoload', 'arvexa-performance-overlay'),
 					bytes(server.autoload.total),
 					grade(server.autoload.total, 819200, 2097152),
-					__('Options loaded from the DB on every request', 'pulse-overlay')
+					__('Options loaded from the DB on every request', 'arvexa-performance-overlay')
 				);
 			}
 			if (server.timelineTop) {
 				var phaseShare = server.phpTime ? server.timelineTop.delta / server.phpTime : 0;
 				rows += row(
-					__('Longest phase', 'pulse-overlay'),
+					__('Longest phase', 'arvexa-performance-overlay'),
 					esc(server.timelineTop.h) + ' · +' + Math.round(server.timelineTop.delta * 1000) + ' ms',
 					phaseShare > 0.3 ? 'poor' : phaseShare > 0.15 ? 'warn' : '',
-					__('The lifecycle phase that ate the biggest share of PHP time', 'pulse-overlay')
+					__('The lifecycle phase that ate the biggest share of PHP time', 'arvexa-performance-overlay')
 				);
 			}
-			html += section(__('Server', 'pulse-overlay'), rows);
+			html += section(__('Server', 'arvexa-performance-overlay'), rows);
 
 			if (!server.sql.logged) {
 				html +=
-					'<div class="po-hint">' + esc(__('Query log is off — reload the page to capture per-plugin SQL timings.', 'pulse-overlay')) + '</div>';
+					'<div class="po-hint">' + esc(__('Query log is off — enable SAVEQUERIES in wp-config.php to capture per-plugin SQL timings.', 'arvexa-performance-overlay')) + '</div>';
 			}
 
 			// --- Remote HTTP (server-side wp_remote_* calls) ---
@@ -652,9 +642,9 @@
 					})
 					.join('');
 				hRows =
-					row(__('Total', 'pulse-overlay'), server.http.length + ' · ' + secs(httpTotal), grade(httpTotal, 0.2, 1),
-						__('Time spent inside wp_remote_* during page generation', 'pulse-overlay')) + hRows;
-				html += section(__('Remote HTTP', 'pulse-overlay'), hRows);
+					row(__('Total', 'arvexa-performance-overlay'), server.http.length + ' · ' + secs(httpTotal), grade(httpTotal, 0.2, 1),
+						__('Time spent inside wp_remote_* during page generation', 'arvexa-performance-overlay')) + hRows;
+				html += section(__('Remote HTTP', 'arvexa-performance-overlay'), hRows);
 			}
 
 			// --- Autoload top offenders (data present with add-ons) ---
@@ -664,22 +654,22 @@
 						return row(o.name, bytes(o.len), grade(o.len, 51200, 262144), o.name);
 					})
 					.join('');
-				html += section(__('Autoload top', 'pulse-overlay'), alRows);
+				html += section(__('Autoload top', 'arvexa-performance-overlay'), alRows);
 			}
 		} else {
-			html += '<div class="po-hint">' + esc(__('No server data on this page.', 'pulse-overlay')) + '</div>';
+			html += '<div class="po-hint">' + esc(__('No server data on this page.', 'arvexa-performance-overlay')) + '</div>';
 		}
 
 		// --- Network ---
 		html += section(
-			__('Network', 'pulse-overlay'),
-			row(__('TTFB', 'pulse-overlay'), ms(vitals.ttfb), grade(vitals.ttfb, 800, 1800)) +
-			row(__('Requests', 'pulse-overlay'), String(res.count), grade(res.count, 50, 100)) +
+			__('Network', 'arvexa-performance-overlay'),
+			row(__('TTFB', 'arvexa-performance-overlay'), ms(vitals.ttfb), grade(vitals.ttfb, 800, 1800)) +
+			row(__('Requests', 'arvexa-performance-overlay'), String(res.count), grade(res.count, 50, 100)) +
 			row(
-				__('Transferred', 'pulse-overlay'),
-				res.transfer || !res.count ? bytes(res.transfer) : __('from cache', 'pulse-overlay'),
+				__('Transferred', 'arvexa-performance-overlay'),
+				res.transfer || !res.count ? bytes(res.transfer) : __('from cache', 'arvexa-performance-overlay'),
 				grade(res.transfer, 1572864, 3145728),
-				__('Network bytes; cached responses count as 0', 'pulse-overlay')
+				__('Network bytes; cached responses count as 0', 'arvexa-performance-overlay')
 			)
 		);
 
@@ -704,18 +694,18 @@
 					);
 				})
 				.join('');
-			html += section(__('AJAX / REST', 'pulse-overlay'), aRows);
+			html += section(__('AJAX / REST', 'arvexa-performance-overlay'), aRows);
 		}
 
 		// --- Rendering ---
 		html += section(
-			__('Rendering', 'pulse-overlay'),
-			row(__('LCP', 'pulse-overlay'), ms(vitals.lcp), grade(vitals.lcp, 2500, 4000)) +
-			(vitals.lcpEl ? row(__('LCP element', 'pulse-overlay'), esc(vitals.lcpEl), '', __('Largest Contentful Paint element', 'pulse-overlay')) : '') +
-			row(__('CLS', 'pulse-overlay'), vitals.cls.toFixed(3), grade(vitals.cls, 0.1, 0.25)) +
-			row(__('INP', 'pulse-overlay'), ms(vitals.inp), grade(vitals.inp, 200, 500), __('Worst interaction so far', 'pulse-overlay')) +
-			row(__('DOM nodes', 'pulse-overlay'), String(dom), grade(dom, 1500, 3000)) +
-			row(__('Long tasks', 'pulse-overlay'), String(vitals.longTasks), grade(vitals.longTasks, 2, 6))
+			__('Rendering', 'arvexa-performance-overlay'),
+			row(__('LCP', 'arvexa-performance-overlay'), ms(vitals.lcp), grade(vitals.lcp, 2500, 4000)) +
+			(vitals.lcpEl ? row(__('LCP element', 'arvexa-performance-overlay'), esc(vitals.lcpEl), '', __('Largest Contentful Paint element', 'arvexa-performance-overlay')) : '') +
+			row(__('CLS', 'arvexa-performance-overlay'), vitals.cls.toFixed(3), grade(vitals.cls, 0.1, 0.25)) +
+			row(__('INP', 'arvexa-performance-overlay'), ms(vitals.inp), grade(vitals.inp, 200, 500), __('Worst interaction so far', 'arvexa-performance-overlay')) +
+			row(__('DOM nodes', 'arvexa-performance-overlay'), String(dom), grade(dom, 1500, 3000)) +
+			row(__('Long tasks', 'arvexa-performance-overlay'), String(vitals.longTasks), grade(vitals.longTasks, 2, 6))
 		);
 
 		// --- Components: merge PHP SQL cost with JS asset cost ---
@@ -774,7 +764,7 @@
 					);
 				})
 				.join('');
-			html += section(__('Components', 'pulse-overlay'), compRows);
+			html += section(__('Components', 'arvexa-performance-overlay'), compRows);
 		}
 
 		// --- Timeline (lifecycle hook markers) ---
@@ -788,10 +778,10 @@
 					var share = total ? delta / total : 0;
 					var g = share > 0.3 ? 'poor' : share > 0.15 ? 'warn' : '';
 					return row(mrk.h, secs(mrk.t) + ' <span class="po-tl-delta ' + g + '">+' +
-						Math.round(delta * 1000) + '</span>', '', __('elapsed · +ms since previous marker', 'pulse-overlay'));
+						Math.round(delta * 1000) + '</span>', '', __('elapsed · +ms since previous marker', 'arvexa-performance-overlay'));
 				})
 				.join('');
-			html += section(__('Timeline', 'pulse-overlay'), tRows);
+			html += section(__('Timeline', 'arvexa-performance-overlay'), tRows);
 		}
 
 		// --- Slowest queries ---
@@ -826,12 +816,12 @@
 					return '<div class="po-query" title="' + esc(tipName + q.sql) + '">' + inner + '</div>';
 				})
 				.join('');
-			html += section(__('Slowest queries', 'pulse-overlay'), qRows);
+			html += section(__('Slowest queries', 'arvexa-performance-overlay'), qRows);
 		}
 
 		html += renderHistory();
 
-		// Sections registered by add-ons via window.Pulse.registerSection().
+		// Sections registered by add-ons via window.ArvexaPerformanceOverlay.registerSection().
 		extraSections
 			.slice()
 			.sort(function (a, b) { return a.order - b.order; })
@@ -846,7 +836,7 @@
 		if (server) {
 			html +=
 				// translators: 1: PHP version number, 2: WordPress version number.
-				'<div class="po-footer">' + esc(sprintf(__('PHP %1$s · WP %2$s', 'pulse-overlay'), server.env.php, server.env.wp)) + '</div>';
+				'<div class="po-footer">' + esc(sprintf(__('PHP %1$s · WP %2$s', 'arvexa-performance-overlay'), server.env.php, server.env.wp)) + '</div>';
 		}
 
 		panel.innerHTML = html;
@@ -887,13 +877,6 @@
 	// Shell
 	// ---------------------------------------------------------------------
 
-	function setCookie(on) {
-		var secure = location.protocol === 'https:' ? '; Secure' : '';
-		document.cookie = on
-			? COOKIE + '=1; path=/; max-age=31536000; SameSite=Lax' + secure
-			: COOKIE + '=; path=/; max-age=0; SameSite=Lax' + secure;
-	}
-
 	function togglePanel(force) {
 		var open = typeof force === 'boolean' ? force : !panel.classList.contains('open');
 		panel.classList.toggle('open', open);
@@ -901,19 +884,18 @@
 			localStorage.setItem(LS_KEY, open ? '1' : '0');
 		} catch (e) { /* private mode */ }
 		if (open) {
-			setCookie(true);
 			renderPanel();
 		}
 	}
 
 	function build() {
 		root = document.createElement('div');
-		root.id = 'pulse-overlay-root';
+		root.id = 'arvexa-performance-overlay-root';
 
 		pill = document.createElement('button');
 		pill.className = 'po-pill';
 		pill.type = 'button';
-		pill.title = __('Pulse — performance overlay', 'pulse-overlay');
+		pill.title = __('Arvexa Performance Overlay', 'arvexa-performance-overlay');
 		pill.addEventListener('click', function () {
 			togglePanel();
 		});
@@ -935,27 +917,22 @@
 			togglePanel(true);
 		}
 
-		// Admin-bar node: show/hide the whole overlay; turning it off also
-		// drops the SAVEQUERIES cookie so production stops paying for the log.
-		var abNode = document.getElementById('wp-admin-bar-pulse-overlay');
+		// Admin-bar node: show or hide the overlay on the current page.
+		var abNode = document.getElementById('wp-admin-bar-arvexa-performance-overlay');
 		if (abNode) {
 			abNode.addEventListener('click', function (e) {
 				e.preventDefault();
 				var hidden = root.classList.toggle('po-hidden');
-				setCookie(!hidden);
 			});
 		}
 
-		// The cookie arms SAVEQUERIES for the next load even before the
-		// panel is first opened.
-		setCookie(true);
 	}
 
-	// Public extension API for add-ons (Pulse Pro etc.). Add-on scripts are
+	// Public extension API for add-ons (Arvexa Performance Pro etc.). Add-on scripts are
 	// enqueued with this file as a dependency, so the object exists by the
 	// time they evaluate.
 	var extraSections = [];
-	window.Pulse = {
+	window.ArvexaPerformanceOverlay = {
 		registerSection: function (id, render, order) {
 			extraSections.push({ id: id, render: render, order: order || 100 });
 			scheduleRender();
@@ -985,7 +962,7 @@
 			armSampling();
 			initNetSpy();
 			// Debug handle: inspect collected data from the console.
-			window.pulseOverlay = {
+			window.arvexaPerformanceOverlay = {
 				get server() { return server; },
 				vitals: vitals
 			};
