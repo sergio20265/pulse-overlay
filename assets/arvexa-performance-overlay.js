@@ -10,6 +10,7 @@
 	'use strict';
 
 	var LS_KEY = 'arvexaPerformanceOverlayOpen';
+	var config = window.ArvexaPerformanceOverlayConfig || {};
 
 	// wp-i18n is declared as a script dependency, but guard anyway — this
 	// file must never break the host page even if load order is disturbed.
@@ -109,6 +110,7 @@
 			if (last) {
 				vitals.lcp = last.startTime;
 				vitals.lcpEl = describeEl(last.element) || vitals.lcpEl;
+				vitals.lcpEntry = last;
 				scheduleRender();
 			}
 		});
@@ -187,6 +189,104 @@
 		});
 
 		return out;
+	}
+
+	// Standard LCP breakdown (TTFB → load delay → load duration → render
+	// delay) plus concrete causes found on the LCP element itself. Computed
+	// on demand: the LCP entry keeps changing until the first input.
+	function analyzeLcp() {
+		var entry = vitals.lcpEntry;
+		if (!entry || vitals.lcp === null) {
+			return null;
+		}
+		var ttfb = vitals.ttfb || 0;
+		var lcp = vitals.lcp;
+		var el = entry.element;
+		var url = entry.url || '';
+		var res = null;
+		if (url && performance.getEntriesByName) {
+			res = performance.getEntriesByName(url, 'resource')[0] || null;
+		}
+
+		var phases = { ttfb: Math.min(ttfb, lcp), loadDelay: 0, loadTime: 0, renderDelay: 0 };
+		if (res) {
+			// requestStart is 0 for cross-origin files without Timing-Allow-Origin.
+			var reqStart = Math.max(ttfb, res.requestStart || res.startTime);
+			var end = Math.min(Math.max(reqStart, res.responseEnd), lcp);
+			phases.loadDelay = Math.max(0, reqStart - ttfb);
+			phases.loadTime = Math.max(0, end - reqStart);
+			phases.renderDelay = Math.max(0, lcp - end);
+		} else {
+			// Text node or a resource we cannot see: everything after TTFB is render.
+			phases.renderDelay = Math.max(0, lcp - phases.ttfb);
+		}
+
+		var tag = el && el.tagName ? el.tagName.toLowerCase() : '';
+		var isImg = tag === 'img';
+		var info = {
+			kind: !url ? 'text' : isImg ? 'image' : tag === 'video' ? 'video' : 'background',
+			url: url,
+			size: res ? (res.encodedBodySize || res.transferSize || 0) : 0,
+			phases: phases,
+			hints: []
+		};
+		var hint = function (level, text) {
+			info.hints.push({ level: level, text: text });
+		};
+
+		try {
+			var preloaded = false;
+			if (url) {
+				var links = document.querySelectorAll('link[rel~="preload"][as="image"]');
+				for (var i = 0; i < links.length; i++) {
+					var href = links[i].href || '';
+					var set = links[i].getAttribute('imagesrcset') || '';
+					if (href === url || (set && set.indexOf(url.split('?')[0].split('/').pop()) !== -1)) {
+						preloaded = true;
+					}
+				}
+			}
+
+			if (isImg && el.getAttribute('loading') === 'lazy') {
+				hint('poor', __('LCP image has loading="lazy" — the browser waits for layout before fetching it. Remove lazy-loading from this image.', 'arvexa-performance-overlay'));
+			}
+			if (info.kind === 'background' && !preloaded) {
+				hint('warn', __('LCP image is a CSS background — it is discovered only after the stylesheet loads. Use an <img> or preload it.', 'arvexa-performance-overlay'));
+			}
+			if (isImg && el.getAttribute('fetchpriority') !== 'high' && !preloaded) {
+				hint('warn', __('LCP image has no fetchpriority="high" — it competes with other images for bandwidth.', 'arvexa-performance-overlay'));
+			}
+			if (isImg && el.naturalWidth) {
+				var needed = Math.round(el.getBoundingClientRect().width * (window.devicePixelRatio || 1));
+				if (needed > 0 && el.naturalWidth > needed * 1.5 && el.naturalWidth - needed > 200) {
+					// translators: 1: intrinsic image width in px, 2: width actually needed in px.
+					hint('warn', sprintf(__('Image is %1$spx wide but only %2$spx is needed — check srcset/sizes or the image size used by the theme.', 'arvexa-performance-overlay'), el.naturalWidth, needed));
+				}
+			}
+			if (info.size > 200 * 1024) {
+				// translators: %1$s: file size, e.g. "480 KB".
+				hint(info.size > 500 * 1024 ? 'poor' : 'warn', sprintf(__('LCP file weighs %1$s — compress it.', 'arvexa-performance-overlay'), bytes(info.size)));
+			}
+			if (url && info.size > 100 * 1024 && !/\.(webp|avif)(\?|$)/i.test(url)) {
+				hint('warn', __('LCP image is not WebP/AVIF — a modern format is usually 30–50% smaller.', 'arvexa-performance-overlay'));
+			}
+			if (url && phases.loadDelay > 500 && phases.loadDelay > lcp * 0.25 && !preloaded) {
+				hint('warn', __('The LCP image starts downloading late — it is not in the initial HTML or is injected by JavaScript (slider, lazy-load script). Preload it.', 'arvexa-performance-overlay'));
+			}
+			if (phases.renderDelay > 500 && phases.renderDelay > lcp * 0.3) {
+				hint('warn', __('Long gap between loading and painting — render-blocking CSS/JS, a web font, or a script revealing the content (animations, sliders).', 'arvexa-performance-overlay'));
+			}
+			if (phases.ttfb > 800 && phases.ttfb > lcp * 0.4) {
+				hint('warn', __('Most of LCP is waiting for the server — see PHP time and SQL above, or enable page caching.', 'arvexa-performance-overlay'));
+			}
+		} catch (e) {
+			/* diagnostics are best-effort */
+		}
+
+		info.hints.sort(function (a, b) {
+			return (b.level === 'poor') - (a.level === 'poor');
+		});
+		return info;
 	}
 
 	function domNodeCount() {
@@ -573,10 +673,22 @@
 		);
 	}
 
+	function pulseDashboard() {
+		if (config.theme !== 'pulse') { return ''; }
+		var device = window.matchMedia && window.matchMedia('(max-width: 782px)').matches ? 'Mobile' : 'Desktop';
+		var cards = [
+			['PHP', secs(server && server.phpTime), grade(server && server.phpTime, 0.5, 1.5), Math.min(100, Math.round((server && server.phpTime || 0) / 1.5 * 100))],
+			['LCP', ms(vitals.lcp), grade(vitals.lcp, 2500, 4000), Math.min(100, Math.round((vitals.lcp || 0) / 4000 * 100))],
+			['CLS', vitals.cls.toFixed(3), grade(vitals.cls, 0.1, 0.25), Math.min(100, Math.round(vitals.cls / 0.25 * 100))],
+			['INP', ms(vitals.inp), grade(vitals.inp, 200, 500), Math.min(100, Math.round((vitals.inp || 0) / 500 * 100))]
+		];
+		return '<div class="po-pulse-overview"><div class="po-pulse-title"><b>Performance Pulse</b><small>Live metrics from this ' + device + ' browser</small></div><a class="po-pulse-pagespeed" href="https://pagespeed.web.dev/analysis?url=' + encodeURIComponent(window.location.href) + '" target="_blank" rel="noopener noreferrer">PageSpeed Insights ↗</a><div class="po-pulse-cards">' + cards.map(function (c) { return '<div class="po-pulse-card ' + c[2] + '"><span>' + c[0] + '</span><strong>' + c[1] + '</strong><i><em style="width:' + c[3] + '%"></em></i></div>'; }).join('') + '</div><p>For independent lab scores, use PageSpeed Insights and select Mobile or Desktop there.</p></div>';
+	}
+
 	function renderPanel() {
 		var res = collectResources();
 		var dom = domNodeCount();
-		var html = '';
+		var html = pulseDashboard();
 
 		// --- Server ---
 		if (server) {
@@ -698,10 +810,14 @@
 		}
 
 		// --- Rendering ---
+		// Free panel names the top LCP cause; the full breakdown is an add-on section.
+		var lcpInfo = analyzeLcp();
+		var lcpHint = lcpInfo && lcpInfo.hints.length ? lcpInfo.hints[0] : null;
 		html += section(
 			__('Rendering', 'arvexa-performance-overlay'),
 			row(__('LCP', 'arvexa-performance-overlay'), ms(vitals.lcp), grade(vitals.lcp, 2500, 4000)) +
 			(vitals.lcpEl ? row(__('LCP element', 'arvexa-performance-overlay'), esc(vitals.lcpEl), '', __('Largest Contentful Paint element', 'arvexa-performance-overlay')) : '') +
+			(lcpHint ? '<div class="po-hint po-hint-' + lcpHint.level + '">' + esc(lcpHint.text) + '</div>' : '') +
 			row(__('CLS', 'arvexa-performance-overlay'), vitals.cls.toFixed(3), grade(vitals.cls, 0.1, 0.25)) +
 			row(__('INP', 'arvexa-performance-overlay'), ms(vitals.inp), grade(vitals.inp, 200, 500), __('Worst interaction so far', 'arvexa-performance-overlay')) +
 			row(__('DOM nodes', 'arvexa-performance-overlay'), String(dom), grade(dom, 1500, 3000)) +
@@ -819,6 +935,55 @@
 			html += section(__('Slowest queries', 'arvexa-performance-overlay'), qRows);
 		}
 
+		// --- Repeated queries (same statement shape, N+1 candidates) ---
+		var dupes = server && server.sql.dupes;
+		if (dupes && dupes.groups) {
+			var dRows = row(
+				__('Redundant', 'arvexa-performance-overlay'),
+				// translators: 1: number of redundant queries, 2: number of distinct repeated statements.
+				esc(sprintf(__('%1$s q in %2$s patterns', 'arvexa-performance-overlay'), dupes.extra, dupes.groups)),
+				grade(dupes.extra, 20, 60),
+				__('Queries that repeat a statement already run on this page — usually a lookup inside a loop', 'arvexa-performance-overlay')
+			);
+			dRows += dupes.top
+				.map(function (d, di) {
+					// Attribution and call stack are only present when an add-on unlocked them.
+					var srcHtml = '';
+					var tipName = '';
+					if (d.component) {
+						var label = componentLabel(d.component);
+						var srcName = (server.names && server.names[d.component]) || label.name;
+						srcHtml = '<span class="po-query-src po-src-' + esc(label.badge) + '">' + esc(srcName) + '</span>';
+						tipName = srcName + ' — ';
+					}
+					var sameTip = d.identical
+						? __('identical every time — the result could be cached', 'arvexa-performance-overlay')
+						: __('same shape, different values — batch into one query', 'arvexa-performance-overlay');
+					var inner =
+						'<span class="po-query-time ' + grade(d.count, 4, 10) + '">×' + d.count + '</span>' +
+						srcHtml +
+						'<span class="po-query-sql">' + esc(d.sql) + '</span>';
+					if (d.stack && d.stack.length) {
+						var expKey = 'dq:' + di;
+						var det = '<div>' + esc(secs(d.time) + ' · ' + sameTip) + '</div>';
+						if (d.components && Object.keys(d.components).length > 1) {
+							det += '<div>' + Object.keys(d.components).map(function (k) {
+								return esc(((server.names && server.names[k]) || componentLabel(k).name) + ' ×' + d.components[k]);
+							}).join(' · ') + '</div>';
+						}
+						det += '<div class="po-sql">' + d.stack.map(esc).join(' → ') + '</div>';
+						return (
+							'<div class="po-query po-clickable po-exp" data-exp="' + expKey + '" title="' +
+							esc(tipName + __('call stack — click to expand', 'arvexa-performance-overlay')) + '">' + inner + '</div>' +
+							'<div class="po-detail' + (openExp[expKey] ? ' open' : '') + '">' + det + '</div>'
+						);
+					}
+					return '<div class="po-query" title="' + esc(tipName + secs(d.time) + ' · ' + sameTip) + '">' + inner + '</div>';
+				})
+				.join('');
+			html += section(__('Repeated queries', 'arvexa-performance-overlay'), dRows);
+		}
+
 		html += renderHistory();
 
 		// Sections registered by add-ons via window.ArvexaPerformanceOverlay.registerSection().
@@ -891,6 +1056,7 @@
 	function build() {
 		root = document.createElement('div');
 		root.id = 'arvexa-performance-overlay-root';
+		if (config.theme === 'pulse') { root.className = 'po-theme-pulse'; }
 
 		pill = document.createElement('button');
 		pill.className = 'po-pill';
@@ -950,6 +1116,7 @@
 		},
 		getServer: function () { return server; },
 		vitals: vitals,
+		analyzeLcp: analyzeLcp,
 		refresh: function () { scheduleRender(); }
 	};
 

@@ -9,6 +9,8 @@ defined( 'ABSPATH' ) || exit;
 
 class Arvexa_Performance_Collector {
 
+	const SETTINGS_OPTION = 'arvexa_performance_overlay_settings';
+
 	/** @var Arvexa_Performance_Collector|null */
 	private static $instance = null;
 
@@ -20,6 +22,9 @@ class Arvexa_Performance_Collector {
 
 	/** @var array Full slowest-queries list (with attribution) for add-ons. */
 	private $sql_slowest_full = array();
+
+	/** @var array Full repeated-query list (with attribution) for add-ons. */
+	private $sql_dupes_full = array();
 
 	/** @var string Normalized path to the plugins directory. */
 	private $plugin_dir;
@@ -49,6 +54,9 @@ class Arvexa_Performance_Collector {
 		$this->register_timeline_markers();
 
 		add_action( 'init', array( $this, 'maybe_hook_output' ) );
+
+		add_action( 'admin_menu', array( $this, 'register_settings_page' ) );
+		add_action( 'admin_init', array( $this, 'register_settings' ) );
 	}
 
 	public function maybe_hook_output() {
@@ -101,6 +109,12 @@ class Arvexa_Performance_Collector {
 			true
 		);
 		wp_set_script_translations( 'arvexa-performance-overlay', 'arvexa-performance-overlay', ARVEXA_PERFORMANCE_OVERLAY_DIR . 'languages' );
+
+		wp_add_inline_script(
+			'arvexa-performance-overlay',
+			'window.ArvexaPerformanceOverlayConfig = ' . wp_json_encode( self::settings() ) . ';',
+			'before'
+		);
 	}
 
 	public function admin_bar_node( $bar ) {
@@ -139,28 +153,42 @@ class Arvexa_Performance_Collector {
 			if ( empty( $frame['file'] ) ) {
 				continue;
 			}
-			$file = wp_normalize_path( $frame['file'] );
-
-			// mu-plugins first: WPMU_PLUGIN_DIR may sit inside wp-content
-			// alongside plugins and must not be shadowed by the plugins check.
-			if ( 0 === strpos( $file, $this->mu_dir . '/' ) ) {
-				return 'mu-plugin:' . $this->first_segment( substr( $file, strlen( $this->mu_dir ) + 1 ) );
+			$component = $this->component_from_file( $frame['file'] );
+			// Skip ourselves and add-ons: measurement callbacks sit on
+			// top of every backtrace and must never claim the cost.
+			if ( 'core' === $component || self::is_own( $component ) ) {
+				continue;
 			}
-			if ( 0 === strpos( $file, $this->plugin_dir . '/' ) ) {
-				$slug = $this->first_segment( substr( $file, strlen( $this->plugin_dir ) + 1 ) );
-				// Skip ourselves and add-ons: measurement callbacks sit on
-				// top of every backtrace and must never claim the cost.
-			if ( 'arvexa-performance-overlay' === $slug || 'arvexa-performance-pro' === $slug ) {
-					continue;
-				}
-				return 'plugin:' . $slug;
-			}
-			if ( 0 === strpos( $file, $this->theme_dir . '/' ) ) {
-				return 'theme:' . $this->first_segment( substr( $file, strlen( $this->theme_dir ) + 1 ) );
-			}
+			return $component;
 		}
 
 		return 'core';
+	}
+
+	/**
+	 * Public: maps a PHP file to its component key. Used by the backtrace
+	 * scan and by add-ons that attribute callbacks via reflection.
+	 */
+	public function component_from_file( $file ) {
+		$file = wp_normalize_path( (string) $file );
+
+		// mu-plugins first: WPMU_PLUGIN_DIR may sit inside wp-content
+		// alongside plugins and must not be shadowed by the plugins check.
+		if ( 0 === strpos( $file, $this->mu_dir . '/' ) ) {
+			return 'mu-plugin:' . $this->first_segment( substr( $file, strlen( $this->mu_dir ) + 1 ) );
+		}
+		if ( 0 === strpos( $file, $this->plugin_dir . '/' ) ) {
+			return 'plugin:' . $this->first_segment( substr( $file, strlen( $this->plugin_dir ) + 1 ) );
+		}
+		if ( 0 === strpos( $file, $this->theme_dir . '/' ) ) {
+			return 'theme:' . $this->first_segment( substr( $file, strlen( $this->theme_dir ) + 1 ) );
+		}
+		return 'core';
+	}
+
+	/** Whether a component key is this plugin or its add-on. */
+	public static function is_own( $component ) {
+		return 'plugin:arvexa-performance-overlay' === $component || 'plugin:arvexa-performance-pro' === $component;
 	}
 
 	private function first_segment( $relative ) {
@@ -220,6 +248,7 @@ class Arvexa_Performance_Collector {
 			$total      = 0.0;
 			$components = array();
 			$slowest    = array();
+			$patterns   = array();
 
 			foreach ( $wpdb->queries as $q ) {
 				$time      = isset( $q[1] ) ? (float) $q[1] : 0.0;
@@ -245,6 +274,31 @@ class Arvexa_Performance_Collector {
 					'time'      => round( $time, 5 ),
 					'component' => $component,
 				);
+
+				// Group by shape: the same statement with different literals
+				// is the classic N+1 (e.g. post meta fetched inside a loop).
+				$raw  = isset( $q[0] ) ? (string) $q[0] : '';
+				$fp   = $this->fingerprint( $raw );
+				$fkey = md5( $fp );
+				if ( ! isset( $patterns[ $fkey ] ) ) {
+					$patterns[ $fkey ] = array(
+						'sql'        => $this->truncate_sql( $fp ),
+						'count'      => 0,
+						'time'       => 0.0,
+						'variants'   => array(),
+						'components' => array(),
+						'stack'      => isset( $q[2] ) ? (string) $q[2] : '',
+					);
+				}
+				$p = &$patterns[ $fkey ];
+				$p['count']++;
+				$p['time'] += $time;
+				// Capped: only needed to tell "identical" from "same shape".
+				if ( count( $p['variants'] ) < 50 ) {
+					$p['variants'][ md5( $raw ) ] = true;
+				}
+				$p['components'][ $component ] = isset( $p['components'][ $component ] ) ? $p['components'][ $component ] + 1 : 1;
+				unset( $p );
 			}
 
 			usort(
@@ -267,6 +321,7 @@ class Arvexa_Performance_Collector {
 
 			$sql['time']        = round( $total, 5 );
 			$sql['byComponent'] = array_values( $components );
+			$sql['dupes']       = $this->summarize_dupes( $patterns );
 
 			// Free panel gets the top 3 without attribution; the full
 			// attributed list is exposed to add-ons via get_sql_slowest().
@@ -303,6 +358,8 @@ class Arvexa_Performance_Collector {
 		);
 
 		return array(
+			'ui'          => self::settings(),
+			'core'        => $this->core_status(),
 			'names'       => $this->component_names(),
 			'autoload'    => array( 'total' => $autoload_total ),
 			'timelineTop' => $timeline_top,
@@ -395,6 +452,99 @@ class Arvexa_Performance_Collector {
 	}
 
 	/**
+	 * Full repeated-query list with attribution and call stack for add-ons
+	 * (populated during collect()).
+	 */
+	public function get_sql_dupes() {
+		return $this->sql_dupes_full;
+	}
+
+	/**
+	 * Reduces a statement to its shape: string and numeric literals become
+	 * "?", IN-lists collapse to one token. Table prefixes like wp_2_posts
+	 * survive because the digit is not on a word boundary.
+	 */
+	private function fingerprint( $sql ) {
+		// Bound regex cost on huge statements (bulk INSERTs, serialized blobs).
+		$sql = substr( $sql, 0, 4000 );
+		$out = preg_replace(
+			array(
+				"/'(?:[^'\\\\]|\\\\.)*'/s",
+				'/"(?:[^"\\\\]|\\\\.)*"/s',
+				'/\b\d+(?:\.\d+)?\b/',
+				'/\bIN\s*\(\s*\?(?:\s*,\s*\?)*\s*\)/i',
+				'/\s+/',
+			),
+			array( '?', '?', '?', 'IN (?, …)', ' ' ),
+			$sql
+		);
+		// preg_replace returns null on backtrack-limit failure.
+		return trim( null === $out ? $sql : $out );
+	}
+
+	/**
+	 * Turns grouped query shapes into the payload: totals for everyone,
+	 * top 3 unattributed for the free panel, full list kept for add-ons.
+	 */
+	private function summarize_dupes( $patterns ) {
+		$repeated = array();
+		$extra    = 0;
+		foreach ( $patterns as $p ) {
+			if ( $p['count'] < 2 ) {
+				continue;
+			}
+			$extra += $p['count'] - 1;
+			arsort( $p['components'] );
+			$repeated[] = array(
+				'sql'        => $p['sql'],
+				'count'      => $p['count'],
+				'time'       => round( $p['time'], 5 ),
+				'identical'  => 1 === count( $p['variants'] ),
+				'component'  => (string) key( $p['components'] ),
+				'components' => $p['components'],
+				'stack'      => $this->stack_tail( $p['stack'] ),
+			);
+		}
+
+		usort(
+			$repeated,
+			static function ( $a, $b ) {
+				return $b['count'] <=> $a['count'] ?: $b['time'] <=> $a['time'];
+			}
+		);
+
+		$this->sql_dupes_full = array_slice( $repeated, 0, 10 );
+
+		return array(
+			'groups' => count( $repeated ),
+			'extra'  => $extra,
+			'top'    => array_map(
+				static function ( $d ) {
+					return array(
+						'sql'       => $d['sql'],
+						'count'     => $d['count'],
+						'time'      => $d['time'],
+						'identical' => $d['identical'],
+					);
+				},
+				array_slice( $repeated, 0, 3 )
+			),
+		);
+	}
+
+	/**
+	 * Last frames of wpdb's caller string ("a, b, c") — the nearest callers
+	 * are what explains a loop.
+	 */
+	private function stack_tail( $stack ) {
+		if ( '' === $stack ) {
+			return array();
+		}
+		$frames = array_map( 'trim', explode( ',', $stack ) );
+		return array_slice( $frames, -6 );
+	}
+
+	/**
 	 * Maps component keys to human-readable names ("plugin:woocommerce" =>
 	 * "WooCommerce") for hover tooltips in the overlay.
 	 */
@@ -429,4 +579,64 @@ class Arvexa_Performance_Collector {
 		}
 		return $sql;
 	}
-}
+
+	/** Defaulted, sanitised interface preferences shared by frontend and admin. */
+	public static function settings() {
+		$settings = get_option( self::SETTINGS_OPTION, array() );
+		$settings = is_array( $settings ) ? $settings : array();
+		return wp_parse_args( $settings, array( 'theme' => 'classic' ) );
+	}
+
+	public function register_settings() {
+		register_setting( 'arvexa_performance_overlay_settings', self::SETTINGS_OPTION, array( 'sanitize_callback' => array( $this, 'sanitize_settings' ) ) );
+	}
+
+	public function sanitize_settings( $settings ) {
+		$settings = is_array( $settings ) ? $settings : array();
+		return array(
+			'theme' => isset( $settings['theme'] ) && 'pulse' === $settings['theme'] ? 'pulse' : 'classic',
+		);
+	}
+
+	public function register_settings_page() {
+		add_menu_page( __( 'Arvexa Performance', 'arvexa-performance-overlay' ), __( 'Performance', 'arvexa-performance-overlay' ), 'manage_options', 'arvexa-performance-overlay', array( $this, 'render_settings_page' ), 'dashicons-performance', 80 );
+	}
+
+	private function core_status() {
+		global $wp_version;
+		$updates = get_site_transient( 'update_core' );
+		$latest = '';
+		$update = false;
+		if ( is_object( $updates ) && ! empty( $updates->updates ) && is_array( $updates->updates ) ) {
+			foreach ( $updates->updates as $offer ) {
+				if ( ! empty( $offer->version ) && 'upgrade' === $offer->response ) { $latest = (string) $offer->version; $update = true; break; }
+			}
+		}
+		return array( 'current' => (string) $wp_version, 'latest' => $latest ? $latest : (string) $wp_version, 'update' => $update, 'url' => admin_url( 'update-core.php' ) );
+	}
+
+	public function render_settings_page() {
+		if ( ! current_user_can( 'manage_options' ) ) { return; }
+		$settings = self::settings();
+		$core = $this->core_status();
+		$psi_url = 'https://pagespeed.web.dev/analysis?url=' . rawurlencode( home_url( '/' ) );
+		?>
+		<div class="wrap arvexa-performance-settings">
+			<h1><?php esc_html_e( 'Arvexa Performance', 'arvexa-performance-overlay' ); ?></h1>
+			<p class="description"><?php esc_html_e( 'Live diagnostics for administrators. Pulse adds a compact visual dashboard and a wide diagnostic grid.', 'arvexa-performance-overlay' ); ?></p>
+			<div class="arvexa-performance-cards">
+				<div class="arvexa-performance-card"><span><?php esc_html_e( 'WordPress Core', 'arvexa-performance-overlay' ); ?></span><strong><?php echo esc_html( $core['current'] ); ?></strong><em class="<?php echo $core['update'] ? 'is-update' : 'is-current'; ?>"><?php echo esc_html( $core['update'] ? sprintf( __( 'Update %s available', 'arvexa-performance-overlay' ), $core['latest'] ) : __( 'Up to date', 'arvexa-performance-overlay' ) ); ?></em><a href="<?php echo esc_url( $core['url'] ); ?>"><?php esc_html_e( 'Check Core updates', 'arvexa-performance-overlay' ); ?></a></div>
+				<div class="arvexa-performance-card arvexa-performance-card-pulse"><span><?php esc_html_e( 'Lab checks', 'arvexa-performance-overlay' ); ?></span><strong><?php esc_html_e( 'PageSpeed Insights', 'arvexa-performance-overlay' ); ?></strong><em><?php esc_html_e( 'Desktop and Mobile scores open in a new tab.', 'arvexa-performance-overlay' ); ?></em><a href="<?php echo esc_url( $psi_url ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Open PageSpeed', 'arvexa-performance-overlay' ); ?> ↗</a></div>
+			</div>
+			<form method="post" action="options.php" class="arvexa-performance-form">
+				<?php settings_fields( 'arvexa_performance_overlay_settings' ); ?>
+				<h2><?php esc_html_e( 'Overlay appearance', 'arvexa-performance-overlay' ); ?></h2>
+				<table class="form-table" role="presentation"><tbody>
+					<tr><th scope="row"><?php esc_html_e( 'Interface theme', 'arvexa-performance-overlay' ); ?></th><td><select name="<?php echo esc_attr( self::SETTINGS_OPTION ); ?>[theme]"><option value="classic" <?php selected( $settings['theme'], 'classic' ); ?>><?php esc_html_e( 'Classic', 'arvexa-performance-overlay' ); ?></option><option value="pulse" <?php selected( $settings['theme'], 'pulse' ); ?>><?php esc_html_e( 'Performance Pulse', 'arvexa-performance-overlay' ); ?></option></select><p class="description"><?php esc_html_e( 'Pulse uses the dark neon visual language and prioritises the four key live metrics.', 'arvexa-performance-overlay' ); ?></p></td></tr>
+				</tbody></table>
+				<?php submit_button(); ?>
+			</form>
+		</div>
+		<style>.arvexa-performance-settings{max-width:1060px}.arvexa-performance-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:24px 0}.arvexa-performance-card{padding:22px;border:1px solid #dcdcde;border-radius:12px;background:#fff}.arvexa-performance-card-pulse{border-color:#b6ef33;background:linear-gradient(135deg,#071119,#10221a);color:#f6fff0}.arvexa-performance-card span,.arvexa-performance-card em{display:block}.arvexa-performance-card strong{display:block;font-size:24px;margin:8px 0}.arvexa-performance-card em{margin-bottom:14px;color:#646970;font-style:normal}.arvexa-performance-card-pulse em{color:#b9cab8}.arvexa-performance-card a{font-weight:600}.is-current{color:#16803c!important}.is-update{color:#b32d2e!important}.arvexa-performance-form{padding:6px 24px 20px;border:1px solid #dcdcde;border-radius:12px;background:#fff}@media(max-width:640px){.arvexa-performance-cards{grid-template-columns:1fr}}</style>
+		<?php
+	}}

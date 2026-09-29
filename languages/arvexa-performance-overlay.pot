@@ -236,3 +236,70 @@ msgstr ""
 #: assets/arvexa-performance-overlay.js:916
 msgid "Arvexa Performance Overlay"
 msgstr ""
+
+#: assets/arvexa-performance-overlay.js
+msgid "Repeated queries"
+msgstr ""
+
+#: assets/arvexa-performance-overlay.js
+msgid "Redundant"
+msgstr ""
+
+#: assets/arvexa-performance-overlay.js
+msgid "%1$s q in %2$s patterns"
+msgstr ""
+
+#: assets/arvexa-performance-overlay.js
+msgid "Queries that repeat a statement already run on this page — usually a lookup inside a loop"
+msgstr ""
+
+#: assets/arvexa-performance-overlay.js
+msgid "identical every time — the result could be cached"
+msgstr ""
+
+#: assets/arvexa-performance-overlay.js
+msgid "same shape, different values — batch into one query"
+msgstr ""
+
+#: assets/arvexa-performance-overlay.js
+msgid "call stack — click to expand"
+msgstr ""
+
+#: assets/arvexa-performance-overlay.js
+msgid "LCP image has loading=\"lazy\" — the browser waits for layout before fetching it. Remove lazy-loading from this image."
+msgstr ""
+
+#: assets/arvexa-performance-overlay.js
+msgid "LCP image is a CSS background — it is discovered only after the stylesheet loads. Use an <img> or preload it."
+msgstr ""
+
+#: assets/arvexa-performance-overlay.js
+msgid "LCP image has no fetchpriority=\"high\" — it competes with other images for bandwidth."
+msgstr ""
+
+#: assets/arvexa-performance-overlay.js
+#, javascript-format
+msgid "Image is %1$spx wide but only %2$spx is needed — check srcset/sizes or the image size used by the theme."
+msgstr ""
+
+#: assets/arvexa-performance-overlay.js
+#, javascript-format
+msgid "LCP file weighs %1$s — compress it."
+msgstr ""
+
+#: assets/arvexa-performance-overlay.js
+#, javascript-format
+msgid "LCP image is not WebP/AVIF — a modern format is usually 30–50% smaller."
+msgstr ""
+
+#: assets/arvexa-performance-overlay.js
+msgid "The LCP image starts downloading late — it is not in the initial HTML or is injected by JavaScript (slider, lazy-load script). Preload it."
+msgstr ""
+
+#: assets/arvexa-performance-overlay.js
+msgid "Long gap between loading and painting — render-blocking CSS/JS, a web font, or a script revealing the content (animations, sliders)."
+msgstr ""
+
+#: assets/arvexa-performance-overlay.js
+msgid "Most of LCP is waiting for the server — see PHP time and SQL above, or enable page caching."
+msgstr ""

@@ -315,6 +315,46 @@
 	color: #ff5d5d;
 }
 
+#arvexa-performance-overlay-root .po-hint-warn,
+#arvexa-performance-overlay-root .po-hint-poor {
+	font-style: normal;
+	border-left: 2px solid #ffb020;
+	color: #d9c08a;
+}
+
+#arvexa-performance-overlay-root .po-hint-poor {
+	border-left-color: #ff5d5d;
+	color: #f0a8a8;
+}
+
+/* LCP phase bar (rendered by add-ons). */
+#arvexa-performance-overlay-root .po-lcp-bar {
+	display: flex;
+	height: 6px;
+	margin: 4px 14px 6px;
+	border-radius: 3px;
+	overflow: hidden;
+	background: #2a2f3a;
+}
+
+#arvexa-performance-overlay-root .po-lcp-bar i {
+	display: block;
+	height: 100%;
+}
+
+#arvexa-performance-overlay-root .po-lcp-ttfb { background: #7c8cff; }
+#arvexa-performance-overlay-root .po-lcp-delay { background: #ffb020; }
+#arvexa-performance-overlay-root .po-lcp-load { background: #3ecf8e; }
+#arvexa-performance-overlay-root .po-lcp-render { background: #ff5d5d; }
+
+#arvexa-performance-overlay-root .po-lcp-dot {
+	display: inline-block;
+	width: 7px;
+	height: 7px;
+	margin-right: 6px;
+	border-radius: 50%;
+}
+
 #arvexa-performance-overlay-root .po-env-diff {
 	padding: 2px 0 4px;
 	font-style: normal;
@@ -345,3 +385,23 @@
 
 /* Never let the host theme's light background make us unreadable —
    the palette is intentionally dark-only. */
+
+/* Performance Pulse: a spacious diagnostic dashboard inspired by the product cover. */
+#arvexa-performance-overlay-root.po-theme-pulse { right: 20px; bottom: 20px; }
+#arvexa-performance-overlay-root.po-theme-pulse .po-pill { border-color: rgba(190,246,50,.55); background: linear-gradient(135deg,#07131a,#102419); color:#efffd0; box-shadow:0 0 24px rgba(178,245,38,.22); }
+#arvexa-performance-overlay-root.po-theme-pulse .po-panel { width:min(1120px,calc(100vw - 40px)); max-height:calc(100vh - 92px); padding:14px; border-color:rgba(183,244,46,.42); border-radius:18px; background:radial-gradient(circle at 15% 0%,rgba(161,238,36,.12),transparent 28%),linear-gradient(145deg,rgba(4,13,20,.98),rgba(8,27,28,.98)); box-shadow:0 18px 60px rgba(0,0,0,.68),0 0 36px rgba(150,242,27,.12); }
+#arvexa-performance-overlay-root.po-theme-pulse .po-panel.open { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; align-content:start; }
+#arvexa-performance-overlay-root.po-theme-pulse .po-pulse-overview,#arvexa-performance-overlay-root.po-theme-pulse .po-footer,#arvexa-performance-overlay-root.po-theme-pulse .po-hint { grid-column:1/-1; }
+#arvexa-performance-overlay-root.po-theme-pulse .po-pulse-overview { display:grid; grid-template-columns:1fr auto; gap:12px; padding:4px 3px 12px; border-bottom:1px solid rgba(185,244,51,.24); }
+#arvexa-performance-overlay-root.po-theme-pulse .po-pulse-title b { display:block; color:#f4ffdf; font:700 16px/1.2 ui-sans-serif,system-ui,sans-serif; letter-spacing:.02em; }
+#arvexa-performance-overlay-root.po-theme-pulse .po-pulse-title small,#arvexa-performance-overlay-root.po-theme-pulse .po-pulse-overview p { color:#9eb3a2; }
+#arvexa-performance-overlay-root.po-theme-pulse .po-pulse-pagespeed { align-self:start; padding:7px 10px; border:1px solid rgba(29,208,240,.5); border-radius:8px; color:#6eeeff; text-decoration:none; font-weight:700; }
+#arvexa-performance-overlay-root.po-theme-pulse .po-pulse-cards { grid-column:1/-1; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; }
+#arvexa-performance-overlay-root.po-theme-pulse .po-pulse-card { padding:11px; border:1px solid rgba(122,158,163,.28); border-radius:10px; background:rgba(5,17,25,.72); }
+#arvexa-performance-overlay-root.po-theme-pulse .po-pulse-card span { color:#94aaa4; font-size:10px; letter-spacing:.11em; }.po-theme-pulse .po-pulse-card strong{display:block;margin:4px 0 8px;color:#f2fae8;font-size:18px}.po-theme-pulse .po-pulse-card i{display:block;height:4px;border-radius:99px;background:#1b3740;overflow:hidden}.po-theme-pulse .po-pulse-card em{display:block;height:100%;background:#b9f52f;box-shadow:0 0 10px #b9f52f}.po-theme-pulse .po-pulse-card.warn em{background:#ffc438;box-shadow:0 0 10px #ffc438}.po-theme-pulse .po-pulse-card.poor em{background:#23d8ed;box-shadow:0 0 10px #23d8ed}
+#arvexa-performance-overlay-root.po-theme-pulse .po-pulse-overview p { grid-column:1/-1; margin:0; font-size:11px; }
+#arvexa-performance-overlay-root.po-theme-pulse .po-section { min-width:0; padding:11px 12px; border:1px solid rgba(111,147,153,.24); border-radius:11px; background:rgba(5,17,25,.55); }
+#arvexa-performance-overlay-root.po-theme-pulse .po-section + .po-section { border-top:1px solid rgba(111,147,153,.24); }
+#arvexa-performance-overlay-root.po-theme-pulse .po-section-title { color:#bbf24a; }.po-theme-pulse .po-good{color:#bbf24a}.po-theme-pulse .good{color:#bbf24a}.po-theme-pulse .warn{color:#ffc438}.po-theme-pulse .poor{color:#35d9e8}
+#arvexa-performance-overlay-root.po-theme-pulse .po-section:nth-of-type(7n),#arvexa-performance-overlay-root.po-theme-pulse .po-section:nth-of-type(7n+1) { grid-column:span 2; }
+@media(max-width:800px){#arvexa-performance-overlay-root.po-theme-pulse .po-panel.open{grid-template-columns:1fr}.po-theme-pulse .po-pulse-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.po-theme-pulse .po-section:nth-of-type(7n),.po-theme-pulse .po-section:nth-of-type(7n+1){grid-column:auto}}

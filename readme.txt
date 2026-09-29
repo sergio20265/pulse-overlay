@@ -1,10 +1,10 @@
 === Arvexa Performance Overlay ===
-Contributors: arvexa, balloodn
+Contributors: balloodn
 Tags: performance, profiler, debug, web vitals, sql queries
 Requires at least: 5.3
-Tested up to: 7.0
-Requires PHP: 7.2
-Stable tag: 1.0.0
+Tested up to: 7.1
+Requires PHP: 7.4
+Stable tag: 1.2.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -20,12 +20,16 @@ Arvexa Performance Overlay shows a small pill in the corner of every page — fo
 * **Rendering** — LCP (and *which element* it is), CLS, INP, DOM node count, long tasks. Official Web Vitals thresholds, color-coded.
 * **AJAX / REST** — every same-origin admin-ajax, wc-ajax and REST call timed as it happens.
 * **Slowest queries** — the top queries with timings.
+* **Repeated queries** — detects duplicate and N+1-shaped SQL statements so you can find cacheable or batchable work.
+* **LCP diagnosis** — identifies the LCP element and its likely blocker, such as a CSS background, late discovery, a lazy image or server delay.
+* **Performance Pulse** — an optional wide dark dashboard with visual PHP, LCP, CLS and INP indicators. It also links to PageSpeed Insights for independent Mobile and Desktop lab checks.
 
 = How it works =
 
 * Per-query plugin attribution uses the `log_query_custom_data` filter and a backtrace scan — no core hacks, no db.php drop-in.
 * The plugin never enables or changes `SAVEQUERIES`. To collect query timings, a site administrator may explicitly add `define( 'SAVEQUERIES', true );` to `wp-config.php` before the "That's all, stop editing!" line.
 * Visitors are never affected: for anyone without the capability the plugin adds no assets, no queries and no output.
+* The Performance menu includes the theme setting, WordPress Core update status and a PageSpeed Insights shortcut.
 * Add-ons can extend the panel via the `arvexa_performance_overlay_data` PHP filter and the `window.ArvexaPerformanceOverlay` JS API.
 
 = Arvexa Performance Pro =
@@ -63,12 +67,29 @@ No. Everything is measured and displayed in your browser on your own site. Arvex
 
 == Screenshots ==
 
-1. The overlay panel: Server, Network, Rendering and Components at a glance.
-2. Components — per-plugin SQL and asset cost.
-3. Slowest queries with timings.
-4. The pill — the only thing visible until you need more.
+1. The compact Classic overlay with server, network and rendering signals.
+2. Performance Pulse: a wide visual dashboard with PHP, LCP, CLS and INP cards.
+3. The Performance settings page: choose the interface theme, check WordPress Core and open PageSpeed Insights.
 
 == Changelog ==
+
+= 1.2.0 =
+* Added repeated-query detection for duplicate and N+1-shaped SQL statements.
+* Added LCP cause analysis for lazy images, CSS backgrounds, discovery, image weight and server delay.
+* Refined Performance Pulse and bundled the Performance settings, Core status and PageSpeed Insights workflow.
+
+
+= 1.1.0 =
+* Added the Performance Pulse dashboard theme with visual PHP, LCP, CLS and INP indicators.
+* Added a WordPress admin settings page, Core version status and PageSpeed Insights shortcuts.
+* Pulse uses a wide diagnostic grid; Pro adds responsive viewport context without faking mobile metrics.
+
+
+= 1.0.2 =
+* Compatibility release for WordPress 7.1.
+
+= 1.0.1 =
+* Compatibility release for WordPress 7.0. Updated the required PHP version metadata to match WordPress core.
 
 = 1.0.0 =
 * Initial public release.

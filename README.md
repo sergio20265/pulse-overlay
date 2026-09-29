@@ -20,10 +20,18 @@ duplicate rendering code.
 - **Components**: per-plugin / per-theme cost — SQL queries and time on the
   PHP side, requests and transferred bytes on the asset side.
 - **Slowest queries**: top 3 with timings (full attributed list + EXPLAIN — Pro).
+- **Repeated queries**: statements are fingerprinted (literals → `?`, IN-lists
+  collapsed) and grouped; shows redundant-query total and the top 3 patterns,
+  flagging identical repeats (cacheable) vs same-shape N+1 (batchable).
+  Attribution + call stack for the top 10 — Pro.
 - **Longest phase**: one Server row naming the lifecycle phase that ate the
   biggest share of PHP time (full timeline — Pro).
 - **LCP element**: which element is the Largest Contentful Paint (per-element
   CLS attribution — Pro).
+- **LCP cause**: the top problem found on the LCP element — `loading="lazy"`,
+  missing `fetchpriority`, oversized/heavy/non-WebP file, CSS background,
+  late discovery, long render delay, slow server (all causes + phase
+  breakdown — Pro). Analysis is exposed as `ArvexaPerformanceOverlay.analyzeLcp()`.
 - **Autoload**: total size of autoloaded options (top offenders — Pro).
 
 ## How it works

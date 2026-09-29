@@ -11,115 +11,115 @@
                 "plural-forms": "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);"
             },
             "Samples": [
-                "\u0417\u0430\u043c\u0435\u0440\u043e\u0432"
+                "Замеров"
             ],
             "History": [
-                "\u0418\u0441\u0442\u043e\u0440\u0438\u044f"
+                "История"
             ],
-            "\u0394 PHP time": [
-                "\u0394 \u0432\u0440\u0435\u043c\u044f PHP"
+            "Δ PHP time": [
+                "Δ время PHP"
             ],
-            "\u0394 SQL queries": [
-                "\u0394 SQL-\u0437\u0430\u043f\u0440\u043e\u0441\u044b"
+            "Δ SQL queries": [
+                "Δ SQL-запросы"
             ],
-            "\u0394 SQL time": [
-                "\u0394 \u0432\u0440\u0435\u043c\u044f SQL"
+            "Δ SQL time": [
+                "Δ время SQL"
             ],
-            "\u0394 LCP": [
-                "\u0394 LCP"
+            "Δ LCP": [
+                "Δ LCP"
             ],
-            "\u0394 Transferred": [
-                "\u0394 \u041f\u0435\u0440\u0435\u0434\u0430\u043d\u043e"
+            "Δ Transferred": [
+                "Δ Передано"
             ],
             "median now vs before the change": [
-                "\u043c\u0435\u0434\u0438\u0430\u043d\u0430 \u0441\u0435\u0439\u0447\u0430\u0441 \u043f\u0440\u043e\u0442\u0438\u0432 \u043c\u0435\u0434\u0438\u0430\u043d\u044b \u0434\u043e \u0438\u0437\u043c\u0435\u043d\u0435\u043d\u0438\u044f"
+                "медиана сейчас против медианы до изменения"
             ],
-            "History \u00b7 since env change": [
-                "\u0418\u0441\u0442\u043e\u0440\u0438\u044f \u00b7 \u0441 \u043c\u043e\u043c\u0435\u043d\u0442\u0430 \u0438\u0437\u043c\u0435\u043d\u0435\u043d\u0438\u044f \u043e\u043a\u0440\u0443\u0436\u0435\u043d\u0438\u044f"
+            "History · since env change": [
+                "История · с момента изменения окружения"
             ],
             "WordPress core": [
-                "\u042f\u0434\u0440\u043e WordPress"
+                "Ядро WordPress"
             ],
             "PHP time": [
-                "\u0412\u0440\u0435\u043c\u044f PHP"
+                "Время PHP"
             ],
             "SQL": [
                 "SQL"
             ],
             "Enable the overlay and reload to log query timings": [
-                "\u0412\u043a\u043b\u044e\u0447\u0438\u0442\u0435 \u043e\u0432\u0435\u0440\u043b\u0435\u0439 \u0438 \u043f\u0435\u0440\u0435\u0437\u0430\u0433\u0440\u0443\u0437\u0438\u0442\u0435 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0443, \u0447\u0442\u043e\u0431\u044b \u0441\u043e\u0431\u0440\u0430\u0442\u044c \u0442\u0430\u0439\u043c\u0438\u043d\u0433\u0438 \u0437\u0430\u043f\u0440\u043e\u0441\u043e\u0432"
+                "Включите оверлей и перезагрузите страницу, чтобы собрать тайминги запросов"
             ],
             "Memory": [
-                "\u041f\u0430\u043c\u044f\u0442\u044c"
+                "Память"
             ],
             "Enqueued": [
-                "\u041f\u043e\u0434\u043a\u043b\u044e\u0447\u0435\u043d\u043e"
+                "Подключено"
             ],
             "Autoload": [
                 "Autoload"
             ],
             "Options loaded from the DB on every request": [
-                "\u041e\u043f\u0446\u0438\u0438, \u0437\u0430\u0433\u0440\u0443\u0436\u0430\u0435\u043c\u044b\u0435 \u0438\u0437 \u0411\u0414 \u043f\u0440\u0438 \u043a\u0430\u0436\u0434\u043e\u043c \u0437\u0430\u043f\u0440\u043e\u0441\u0435"
+                "Опции, загружаемые из БД при каждом запросе"
             ],
             "Longest phase": [
-                "\u0421\u0430\u043c\u0430\u044f \u0434\u043e\u043b\u0433\u0430\u044f \u0444\u0430\u0437\u0430"
+                "Самая долгая фаза"
             ],
             "The lifecycle phase that ate the biggest share of PHP time": [
-                "\u0424\u0430\u0437\u0430 \u0436\u0438\u0437\u043d\u0435\u043d\u043d\u043e\u0433\u043e \u0446\u0438\u043a\u043b\u0430, \u0441\u044a\u0435\u0432\u0448\u0430\u044f \u0431\u043e\u043b\u044c\u0448\u0435 \u0432\u0441\u0435\u0433\u043e \u0432\u0440\u0435\u043c\u0435\u043d\u0438 PHP"
+                "Фаза жизненного цикла, съевшая больше всего времени PHP"
             ],
             "Server": [
-                "\u0421\u0435\u0440\u0432\u0435\u0440"
+                "Сервер"
             ],
-            "Query log is off \u2014 reload the page to capture per-plugin SQL timings.": [
-                "\u041b\u043e\u0433\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u0435 \u0437\u0430\u043f\u0440\u043e\u0441\u043e\u0432 \u0432\u044b\u043a\u043b\u044e\u0447\u0435\u043d\u043e \u2014 \u043f\u0435\u0440\u0435\u0437\u0430\u0433\u0440\u0443\u0437\u0438\u0442\u0435 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0443, \u0447\u0442\u043e\u0431\u044b \u0441\u043e\u0431\u0440\u0430\u0442\u044c \u0442\u0430\u0439\u043c\u0438\u043d\u0433\u0438 SQL \u043f\u043e \u043f\u043b\u0430\u0433\u0438\u043d\u0430\u043c."
+            "Query log is off — reload the page to capture per-plugin SQL timings.": [
+                "Логирование запросов выключено — перезагрузите страницу, чтобы собрать тайминги SQL по плагинам."
             ],
             "Total": [
-                "\u0412\u0441\u0435\u0433\u043e"
+                "Всего"
             ],
             "Time spent inside wp_remote_* during page generation": [
-                "\u0412\u0440\u0435\u043c\u044f \u0432\u043d\u0443\u0442\u0440\u0438 wp_remote_* \u043f\u0440\u0438 \u0433\u0435\u043d\u0435\u0440\u0430\u0446\u0438\u0438 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u044b"
+                "Время внутри wp_remote_* при генерации страницы"
             ],
             "Remote HTTP": [
-                "\u0412\u043d\u0435\u0448\u043d\u0438\u0435 HTTP-\u0437\u0430\u043f\u0440\u043e\u0441\u044b"
+                "Внешние HTTP-запросы"
             ],
             "Autoload top": [
-                "\u0422\u043e\u043f autoload"
+                "Топ autoload"
             ],
             "No server data on this page.": [
-                "\u041d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435 \u043d\u0435\u0442 \u0441\u0435\u0440\u0432\u0435\u0440\u043d\u044b\u0445 \u0434\u0430\u043d\u043d\u044b\u0445."
+                "На этой странице нет серверных данных."
             ],
             "Network": [
-                "\u0421\u0435\u0442\u044c"
+                "Сеть"
             ],
             "TTFB": [
                 "TTFB"
             ],
             "Requests": [
-                "\u0417\u0430\u043f\u0440\u043e\u0441\u043e\u0432"
+                "Запросов"
             ],
             "Transferred": [
-                "\u041f\u0435\u0440\u0435\u0434\u0430\u043d\u043e"
+                "Передано"
             ],
             "from cache": [
-                "\u0438\u0437 \u043a\u044d\u0448\u0430"
+                "из кэша"
             ],
             "Network bytes; cached responses count as 0": [
-                "\u0411\u0430\u0439\u0442\u044b \u0441\u0435\u0442\u0438; \u0437\u0430\u043a\u044d\u0448\u0438\u0440\u043e\u0432\u0430\u043d\u043d\u044b\u0435 \u043e\u0442\u0432\u0435\u0442\u044b \u0441\u0447\u0438\u0442\u0430\u044e\u0442\u0441\u044f \u043a\u0430\u043a 0"
+                "Байты сети; закэшированные ответы считаются как 0"
             ],
             "AJAX \/ REST": [
                 "AJAX \/ REST"
             ],
             "Rendering": [
-                "\u0420\u0435\u043d\u0434\u0435\u0440\u0438\u043d\u0433"
+                "Рендеринг"
             ],
             "LCP": [
                 "LCP"
             ],
             "LCP element": [
-                "\u042d\u043b\u0435\u043c\u0435\u043d\u0442 LCP"
+                "Элемент LCP"
             ],
             "Largest Contentful Paint element": [
-                "\u042d\u043b\u0435\u043c\u0435\u043d\u0442 Largest Contentful Paint"
+                "Элемент Largest Contentful Paint"
             ],
             "CLS": [
                 "CLS"
@@ -128,31 +128,79 @@
                 "INP"
             ],
             "Worst interaction so far": [
-                "\u0425\u0443\u0434\u0448\u0435\u0435 \u0432\u0437\u0430\u0438\u043c\u043e\u0434\u0435\u0439\u0441\u0442\u0432\u0438\u0435 \u043d\u0430 \u0442\u0435\u043a\u0443\u0449\u0438\u0439 \u043c\u043e\u043c\u0435\u043d\u0442"
+                "Худшее взаимодействие на текущий момент"
             ],
             "DOM nodes": [
-                "\u0423\u0437\u043b\u043e\u0432 DOM"
+                "Узлов DOM"
             ],
             "Long tasks": [
-                "\u0414\u043e\u043b\u0433\u0438\u0435 \u0437\u0430\u0434\u0430\u0447\u0438"
+                "Долгие задачи"
             ],
             "Components": [
-                "\u041a\u043e\u043c\u043f\u043e\u043d\u0435\u043d\u0442\u044b"
+                "Компоненты"
             ],
-            "elapsed \u00b7 +ms since previous marker": [
-                "\u043f\u0440\u043e\u0448\u043b\u043e \u00b7 +\u043c\u0441 \u0441 \u043f\u0440\u0435\u0434\u044b\u0434\u0443\u0449\u0435\u0439 \u043c\u0435\u0442\u043a\u0438"
+            "elapsed · +ms since previous marker": [
+                "прошло · +мс с предыдущей метки"
             ],
             "Timeline": [
-                "\u0422\u0430\u0439\u043c\u043b\u0430\u0439\u043d"
+                "Таймлайн"
             ],
             "Slowest queries": [
-                "\u0421\u0430\u043c\u044b\u0435 \u043c\u0435\u0434\u043b\u0435\u043d\u043d\u044b\u0435 \u0437\u0430\u043f\u0440\u043e\u0441\u044b"
+                "Самые медленные запросы"
             ],
-            "PHP %1$s \u00b7 WP %2$s": [
-                "PHP %1$s \u00b7 WP %2$s"
+            "PHP %1$s · WP %2$s": [
+                "PHP %1$s · WP %2$s"
             ],
-            "Arvexa Performance Overlay \u2014 performance overlay": [
-                "Arvexa Performance Overlay \u2014 \u043e\u0432\u0435\u0440\u043b\u0435\u0439 \u043f\u0440\u043e\u0438\u0437\u0432\u043e\u0434\u0438\u0442\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u0438"
+            "Arvexa Performance Overlay — performance overlay": [
+                "Arvexa Performance Overlay — оверлей производительности"
+            ],
+            "Repeated queries": [
+                "Повторяющиеся запросы"
+            ],
+            "Redundant": [
+                "Лишние"
+            ],
+            "%1$s q in %2$s patterns": [
+                "%1$s запр. в %2$s шаблонах"
+            ],
+            "Queries that repeat a statement already run on this page — usually a lookup inside a loop": [
+                "Запросы, повторяющие уже выполненный на этой странице — обычно выборка внутри цикла"
+            ],
+            "identical every time — the result could be cached": [
+                "каждый раз одинаковый — результат можно кешировать"
+            ],
+            "same shape, different values — batch into one query": [
+                "та же форма, разные значения — объедините в один запрос"
+            ],
+            "call stack — click to expand": [
+                "стек вызовов — нажмите, чтобы раскрыть"
+            ],
+            "LCP image has loading=\"lazy\" — the browser waits for layout before fetching it. Remove lazy-loading from this image.": [
+                "У LCP-картинки стоит loading=\"lazy\" — браузер ждёт раскладки страницы, прежде чем её скачать. Уберите ленивую загрузку с этой картинки."
+            ],
+            "LCP image is a CSS background — it is discovered only after the stylesheet loads. Use an <img> or preload it.": [
+                "LCP-картинка — CSS-фон: браузер узнаёт о ней только после загрузки стилей. Используйте <img> или preload."
+            ],
+            "LCP image has no fetchpriority=\"high\" — it competes with other images for bandwidth.": [
+                "У LCP-картинки нет fetchpriority=\"high\" — она делит канал с остальными картинками."
+            ],
+            "Image is %1$spx wide but only %2$spx is needed — check srcset\/sizes or the image size used by the theme.": [
+                "Картинка шириной %1$spx, а нужно только %2$spx — проверьте srcset\/sizes или размер изображения в теме."
+            ],
+            "LCP file weighs %1$s — compress it.": [
+                "LCP-файл весит %1$s — сожмите его."
+            ],
+            "LCP image is not WebP\/AVIF — a modern format is usually 30–50% smaller.": [
+                "LCP-картинка не в WebP\/AVIF — современный формат обычно на 30–50% легче."
+            ],
+            "The LCP image starts downloading late — it is not in the initial HTML or is injected by JavaScript (slider, lazy-load script). Preload it.": [
+                "LCP-картинка начинает качаться поздно — её нет в исходном HTML или её вставляет JavaScript (слайдер, скрипт ленивой загрузки). Добавьте preload."
+            ],
+            "Long gap between loading and painting — render-blocking CSS\/JS, a web font, or a script revealing the content (animations, sliders).": [
+                "Долгая пауза между загрузкой и отрисовкой — блокирующие CSS\/JS, веб-шрифт или скрипт, который показывает контент (анимации, слайдеры)."
+            ],
+            "Most of LCP is waiting for the server — see PHP time and SQL above, or enable page caching.": [
+                "Большая часть LCP — ожидание сервера: смотрите время PHP и SQL выше или включите кеш страниц."
             ]
         }
     }

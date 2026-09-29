@@ -42,3 +42,71 @@ msgstr "https://arvexa.ru"
 #: includes/class-arvexa-performance-collector.php:117
 msgid "Toggle the performance overlay"
 msgstr "Включить/выключить оверлей производительности"
+
+#: assets/arvexa-performance-overlay.js
+msgid "Repeated queries"
+msgstr "Повторяющиеся запросы"
+
+#: assets/arvexa-performance-overlay.js
+msgid "Redundant"
+msgstr "Лишние"
+
+#: assets/arvexa-performance-overlay.js
+#, javascript-format
+msgid "%1$s q in %2$s patterns"
+msgstr "%1$s запр. в %2$s шаблонах"
+
+#: assets/arvexa-performance-overlay.js
+msgid "Queries that repeat a statement already run on this page — usually a lookup inside a loop"
+msgstr "Запросы, повторяющие уже выполненный на этой странице — обычно выборка внутри цикла"
+
+#: assets/arvexa-performance-overlay.js
+msgid "identical every time — the result could be cached"
+msgstr "каждый раз одинаковый — результат можно кешировать"
+
+#: assets/arvexa-performance-overlay.js
+msgid "same shape, different values — batch into one query"
+msgstr "та же форма, разные значения — объедините в один запрос"
+
+#: assets/arvexa-performance-overlay.js
+msgid "call stack — click to expand"
+msgstr "стек вызовов — нажмите, чтобы раскрыть"
+
+#: assets/arvexa-performance-overlay.js
+msgid "LCP image has loading=\"lazy\" — the browser waits for layout before fetching it. Remove lazy-loading from this image."
+msgstr "У LCP-картинки стоит loading=\"lazy\" — браузер ждёт раскладки страницы, прежде чем её скачать. Уберите ленивую загрузку с этой картинки."
+
+#: assets/arvexa-performance-overlay.js
+msgid "LCP image is a CSS background — it is discovered only after the stylesheet loads. Use an <img> or preload it."
+msgstr "LCP-картинка — CSS-фон: браузер узнаёт о ней только после загрузки стилей. Используйте <img> или preload."
+
+#: assets/arvexa-performance-overlay.js
+msgid "LCP image has no fetchpriority=\"high\" — it competes with other images for bandwidth."
+msgstr "У LCP-картинки нет fetchpriority=\"high\" — она делит канал с остальными картинками."
+
+#: assets/arvexa-performance-overlay.js
+#, javascript-format
+msgid "Image is %1$spx wide but only %2$spx is needed — check srcset/sizes or the image size used by the theme."
+msgstr "Картинка шириной %1$spx, а нужно только %2$spx — проверьте srcset/sizes или размер изображения в теме."
+
+#: assets/arvexa-performance-overlay.js
+#, javascript-format
+msgid "LCP file weighs %1$s — compress it."
+msgstr "LCP-файл весит %1$s — сожмите его."
+
+#: assets/arvexa-performance-overlay.js
+#, javascript-format
+msgid "LCP image is not WebP/AVIF — a modern format is usually 30–50% smaller."
+msgstr "LCP-картинка не в WebP/AVIF — современный формат обычно на 30–50% легче."
+
+#: assets/arvexa-performance-overlay.js
+msgid "The LCP image starts downloading late — it is not in the initial HTML or is injected by JavaScript (slider, lazy-load script). Preload it."
+msgstr "LCP-картинка начинает качаться поздно — её нет в исходном HTML или её вставляет JavaScript (слайдер, скрипт ленивой загрузки). Добавьте preload."
+
+#: assets/arvexa-performance-overlay.js
+msgid "Long gap between loading and painting — render-blocking CSS/JS, a web font, or a script revealing the content (animations, sliders)."
+msgstr "Долгая пауза между загрузкой и отрисовкой — блокирующие CSS/JS, веб-шрифт или скрипт, который показывает контент (анимации, слайдеры)."
+
+#: assets/arvexa-performance-overlay.js
+msgid "Most of LCP is waiting for the server — see PHP time and SQL above, or enable page caching."
+msgstr "Большая часть LCP — ожидание сервера: смотрите время PHP и SQL выше или включите кеш страниц."

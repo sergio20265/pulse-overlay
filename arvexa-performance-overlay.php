@@ -3,19 +3,20 @@
  * Plugin Name: Arvexa Performance Overlay
  * Plugin URI:  https://plugins.arvexa.ru/performance.html
  * Description: A live on-page performance overlay for admins: PHP time, SQL queries attributed per plugin, memory, autoload size, Web Vitals (LCP / CLS / INP / TTFB), DOM size and network cost.
- * Version:     1.0.0
+ * Version:     1.2.0
  * Author:      Arvexa
  * Author URI:  https://arvexa.ru
  * License:     GPL-2.0-or-later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: arvexa-performance-overlay
  * Requires at least: 5.3
- * Requires PHP: 7.2
+ * Tested up to: 7.1
+ * Requires PHP: 7.4
  */
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'ARVEXA_PERFORMANCE_OVERLAY_VERSION', '1.0.0' );
+define( 'ARVEXA_PERFORMANCE_OVERLAY_VERSION', '1.2.0' );
 define( 'ARVEXA_PERFORMANCE_OVERLAY_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ARVEXA_PERFORMANCE_OVERLAY_URL', plugin_dir_url( __FILE__ ) );
 
