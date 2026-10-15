@@ -14,7 +14,8 @@
 
 	// wp-i18n is declared as a script dependency, but guard anyway — this
 	// file must never break the host page even if load order is disturbed.
-	var i18n = (window.wp && window.wp.i18n) || {};
+	// Standalone builds pass their own translator; WP uses wp-i18n.
+	var i18n = config.i18n || (window.wp && window.wp.i18n) || {};
 	var __ = i18n.__ || function (text) { return text; };
 	var sprintf = i18n.sprintf || function (fmt) {
 		var args = arguments;
@@ -673,6 +674,23 @@
 		);
 	}
 
+	// Sections registered via window.ArvexaPerformanceOverlay.registerSection().
+	// order < 0 goes above the built-in sections, the rest below them.
+	function renderExtraSections(top) {
+		var out = '';
+		extraSections
+			.filter(function (s) { return top ? s.order < 0 : s.order >= 0; })
+			.sort(function (a, b) { return a.order - b.order; })
+			.forEach(function (s) {
+				try {
+					out += s.render(server, vitals) || '';
+				} catch (e) {
+					/* an add-on must never break the panel */
+				}
+			});
+		return out;
+	}
+
 	function pulseDashboard() {
 		if (config.theme !== 'pulse') { return ''; }
 		var device = window.matchMedia && window.matchMedia('(max-width: 782px)').matches ? 'Mobile' : 'Desktop';
@@ -688,7 +706,7 @@
 	function renderPanel() {
 		var res = collectResources();
 		var dom = domNodeCount();
-		var html = pulseDashboard();
+		var html = pulseDashboard() + renderExtraSections(true);
 
 		// --- Server ---
 		if (server) {
@@ -768,7 +786,7 @@
 					.join('');
 				html += section(__('Autoload top', 'arvexa-performance-overlay'), alRows);
 			}
-		} else {
+		} else if (!config.standalone) {
 			html += '<div class="po-hint">' + esc(__('No server data on this page.', 'arvexa-performance-overlay')) + '</div>';
 		}
 
@@ -986,17 +1004,7 @@
 
 		html += renderHistory();
 
-		// Sections registered by add-ons via window.ArvexaPerformanceOverlay.registerSection().
-		extraSections
-			.slice()
-			.sort(function (a, b) { return a.order - b.order; })
-			.forEach(function (s) {
-				try {
-					html += s.render(server, vitals) || '';
-				} catch (e) {
-					/* an add-on must never break the panel */
-				}
-			});
+		html += renderExtraSections(false);
 
 		if (server) {
 			html +=
@@ -1077,7 +1085,9 @@
 
 		var open = false;
 		try {
-			open = localStorage.getItem(LS_KEY) === '1';
+			var stored = localStorage.getItem(LS_KEY);
+			// Standalone users arrive via ?arvexa=1 to look at the panel, so open it unless they closed it before.
+			open = stored === '1' || (stored === null && !!config.standalone);
 		} catch (e) { /* private mode */ }
 		if (open) {
 			togglePanel(true);
@@ -1100,7 +1110,7 @@
 	var extraSections = [];
 	window.ArvexaPerformanceOverlay = {
 		registerSection: function (id, render, order) {
-			extraSections.push({ id: id, render: render, order: order || 100 });
+			extraSections.push({ id: id, render: render, order: typeof order === 'number' ? order : 100 });
 			scheduleRender();
 		},
 		helpers: {
@@ -1125,9 +1135,12 @@
 			server = readServerData();
 			collectVitals();
 			build();
-			watchServerData();
-			armSampling();
-			initNetSpy();
+			// Server JSON polling, history beacons and the WP AJAX spy only make sense inside WordPress.
+			if (!config.standalone) {
+				watchServerData();
+				armSampling();
+				initNetSpy();
+			}
 			// Debug handle: inspect collected data from the console.
 			window.arvexaPerformanceOverlay = {
 				get server() { return server; },
