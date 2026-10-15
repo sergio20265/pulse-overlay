@@ -40,6 +40,7 @@ window.__arvexaPerfRu = {
 	'Not responding': 'Не отвечают',
 	'hangs %1$s': 'висит %1$s',
 	'failed': 'ошибка',
+	'no answer for %1$s': 'нет ответа %1$s',
 	'Block rendering': 'Блокируют отрисовку',
 	'Domains': 'Домены',
 	'req': 'запр.',
