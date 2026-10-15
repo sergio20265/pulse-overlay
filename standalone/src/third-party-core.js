@@ -24,7 +24,7 @@
 		{ match: ['getreview.io'], name: 'GetReview', kind: 'review widget' },
 		{ match: ['intickets.ru'], name: 'Intickets', kind: 'ticket sales' },
 		{ match: ['clickfraud.ru'], name: 'Clickfraud', kind: 'click-fraud protection, tag manager' },
-		{ match: ['mango-office.ru'], name: 'Mango Office', kind: 'call tracking' },
+		{ match: ['mango-office.ru', 'mng.tl'], name: 'Mango Office', kind: 'call tracking' },
 		{ match: ['tildacdn.com', 'tilda.ws', 'tildaapi.com'], name: 'Tilda', kind: 'site builder' },
 		{ match: ['top-fwz1.mail.ru', 'top.mail.ru'], name: 'Top@Mail.ru', kind: 'analytics' },
 		{ match: ['vk.com', 'vk.ru', 'userapi.com'], name: 'VK', kind: 'social widgets, pixel' },

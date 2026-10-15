@@ -156,7 +156,8 @@
 		}
 
 		// --- Render-blocking ---
-		var blocking = s.views.filter(function (v) { return v.blocking && v.state !== 'pending'; });
+		// Render-blocking stylesheets are normal practice; only synchronous scripts are worth flagging.
+		var blocking = s.views.filter(function (v) { return v.blocking && v.type === 'script' && v.state !== 'pending'; });
 		if (blocking.length) {
 			html += H.section(__('Block rendering'), blocking.map(function (v) {
 				return H.expRow('tp-block:' + v.url, H.esc(serviceLabel(v.host)), H.esc(H.ms(v.durationMs)), 'warn', requestDetail(v));
@@ -173,10 +174,12 @@
 				}
 				parts.push(H.ms(g.slowestMs));
 				var gradeClass = g.pending ? 'poor' : H.grade(g.slowestMs, 1000, 3000);
+				// One service often spans several hosts (static/neo/thb.tildacdn.com), so show the host too.
+				var svc = C.lookupService(g.host);
 				var label = g.host === pageHost
 					? '<i class="po-badge po-badge-core">' + H.esc(__('site')) + '</i>' + H.esc(g.host)
-					: H.esc(serviceLabel(g.host));
-				return '<div class="po-row" title="' + H.esc(g.host) + '">' +
+					: svc ? H.esc(__(svc.name)) + ' <span class="po-host">' + H.esc(g.host) + '</span>' : H.esc(g.host);
+				return '<div class="po-row" title="' + H.esc(svc ? __(svc.name) + ' · ' + __(svc.kind) : g.host) + '">' +
 					'<span class="po-label">' + label + '</span>' +
 					'<span class="po-value ' + gradeClass + '">' + H.esc(parts.join(' · ')) + '</span>' +
 					'</div>';

@@ -31,6 +31,10 @@
 	// Only elements that fire load/error are tracked, otherwise they would look "hanging" forever.
 	function urlAttr(el) {
 		var t = el.tagName;
+		// Modern browsers never fetch <script nomodule>, so it would never settle.
+		if (t === 'SCRIPT' && el.noModule) {
+			return '';
+		}
 		if (t === 'SCRIPT' || t === 'IFRAME' || t === 'IMG') {
 			return el.getAttribute('loading') === 'lazy' ? '' : 'src';
 		}

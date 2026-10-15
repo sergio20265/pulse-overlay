@@ -26,6 +26,10 @@
 	cursor: default;
 }
 
+#arvexa-performance-overlay-root .po-host {
+	color: #6b7280;
+}
+
 #arvexa-performance-overlay-root .po-share-link {
 	color: #7cc4ff;
 	word-break: break-all;
