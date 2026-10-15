@@ -306,7 +306,7 @@ test('buildSnapshot strips queries and caps lists', () => {
 
 - [ ] **Step 2: Run tests to verify they fail**
 
-Run: `node --test standalone/test/`
+Run: `node --test "standalone/test/*.test.js"`
 Expected: FAIL — `Cannot find module '../src/third-party-core.js'`.
 
 - [ ] **Step 3: Implement `standalone/src/third-party-core.js`**
@@ -607,7 +607,7 @@ Expected: FAIL — `Cannot find module '../src/third-party-core.js'`.
 
 - [ ] **Step 4: Run tests to verify they pass**
 
-Run: `node --test standalone/test/`
+Run: `node --test "standalone/test/*.test.js"`
 Expected: all tests PASS.
 
 - [ ] **Step 5: Commit**
@@ -1447,7 +1447,7 @@ test('service names and kinds are translated or proper nouns', () => {
 
 - [ ] **Step 2: Run to verify it fails**
 
-Run: `node --test standalone/test/`
+Run: `node --test "standalone/test/*.test.js"`
 Expected: FAIL in "every section string has a Russian translation" (`section strings were found` — the placeholder has none).
 
 - [ ] **Step 3: Implement `standalone/src/third-party-section.js`**
@@ -1826,7 +1826,7 @@ Expected: FAIL in "every section string has a Russian translation" (`section str
 
 - [ ] **Step 4: Run tests**
 
-Run: `node --test standalone/test/`
+Run: `node --test "standalone/test/*.test.js"`
 Expected: all PASS. If "every section string…" lists missing keys, add them to `i18n-ru.js` (Russian) and re-run.
 
 - [ ] **Step 5: Harness end-to-end check**
