@@ -40,13 +40,17 @@ wizardia.land). Без регистрации. Интерфейс на русс�
 - Клиент копирует `<script>…</script>` со страницы `/perf` в head сайта,
   **первым** скриптом. Никакого `<script src>` с нашего сервера: синхронная
   загрузка с внешнего хоста — ровно тот класс проблем, который мы ищем.
-- Для обычного посетителя: ноль сетевых запросов. Ставит лёгкий перехват
-  вставки тегов (`Node.prototype.appendChild` / `insertBefore`,
+- Для обычного посетителя loader **не делает ничего**: проверяет `?arvexa`
+  и куку и выходит. Никаких перехватов и наблюдателей — иначе мы сами
+  нагружали бы всех посетителей (как amo-ym с его MutationObserver).
+- Когда включён: ставит перехват вставки тегов (`Node.prototype.appendChild` / `insertBefore`,
   `Element.prototype.append/prepend/after/before/replaceWith`, сеттер `src`
   для `HTMLScriptElement`/`HTMLIFrameElement`/`HTMLImageElement`, `href` для
   `HTMLLinkElement`) и пишет в память кольцевой буфер: URL, тип тега, время
   вставки, стек вызовов (`new Error().stack`, обрезанный). Буфер ограничен
   (~300 записей), ничего не отправляется.
+  и MutationObserver на документ (теги из исходного HTML и вставленные в
+  обход перехвата), вешает на каждый тег `load`/`error`.
 - Включение: `?arvexa=1` → ставит куку `arvexa_perf=1` (path=/, 7 дней) и
   асинхронно грузит `https://portal.arvexa.ru/perf/overlay.js`. `?arvexa=0`
   снимает куку. Без параметра и куки overlay не грузится.
@@ -66,10 +70,14 @@ wizardia.land). Без регистрации. Интерфейс на русс�
 
 - `config.standalone`: без админ-бара, без серверных блоков (их и так нет
   без PHP-JSON), без отправки в историю; панель открывается через «пилюлю».
-- `config.strings`: словарь строк; по умолчанию английские (текущее
-  поведение плагина), в standalone-сборку передаётся русский.
-- Точка приёма буфера loader'а (`window.__arvexaPerfQ` или аналог) — ядро
-  отдаёт её модулям.
+- `config.i18n`: объект `{__, sprintf}` вместо `wp.i18n`; ядро уже ведёт все
+  строки через `__()` с английским текстом как ключом, standalone-сборка
+  передаёт русский словарь. В WP — `wp.i18n`, как сейчас.
+- В standalone ядро не запускает опрос серверного JSON, отправку истории и
+  перехват fetch/XHR (он нужен только для WP AJAX), не пишет «No server
+  data», а панель при первом включении открыта.
+- Буфер loader'а (`window.__arvexaPerf`) модуль читает напрямую, ядру он не
+  нужен.
 - В WordPress всё выглядит и работает как раньше.
 
 ### Модуль «Сторонние скрипты» (`registerSection`)
@@ -100,8 +108,9 @@ wizardia.land). Без регистрации. Интерфейс на русс�
 
 ### Статика
 
-- `public/perf/overlay.<hash>.js` / `.css` — nginx, `Cache-Control:
-  immutable`, год.
+- `public/perf/static/overlay.<hash>.js` / `.css` — `Cache-Control:
+  immutable`, год (заголовки через `headers()` в next.config; nginx может
+  отдавать эту папку напрямую — оптимизация, не требование).
 - `public/perf/overlay.js` — крошечный указатель на актуальную хэш-версию,
   кэш 5 минут.
 
@@ -120,7 +129,9 @@ wizardia.land). Без регистрации. Интерфейс на русс�
     (не резолвить повторно — защита от DNS rebinding);
   - кроме ClientHello и одного `HEAD /` ничего не отправляем;
   - лимиты: 10 запросов / 10 мин на IP, 30 / час на origin;
-  - кэш результата по хосту 5 минут.
+  - кэш результата по хосту 5 минут;
+  - лимиты и кэш — в памяти процесса (один процесс Next на VPS), сброс при
+    рестарте допустим.
 
 ### `POST /api/perf/reports` и `GET /perf/r/<id>`
 
@@ -128,8 +139,9 @@ wizardia.land). Без регистрации. Интерфейс на русс�
   повторно на сервере), метрики, домены, зависшие запросы, инициаторы,
   результаты probe, версия loader/overlay, user-agent. Никаких кук, данных
   форм, содержимого localStorage.
-- `id` — 16 случайных символов (base62). Хранение 30 дней, затем удаление
-  плановой задачей.
+- `id` — 16 случайных символов (base62). Хранение 30 дней: просроченные
+  удаляются при создании каждого нового отчёта, страница отдаёт 404 для
+  просроченных (без cron).
 - Prisma: модель `PerfReport { id, origin, json, ip, createdAt, expiresAt }`.
 - Лимит: 5 отчётов / 10 мин на IP (подсчёт по БД, как в leads). Размер тела
   ≤ 200 КБ.
@@ -156,14 +168,15 @@ wizardia.land). Без регистрации. Интерфейс на русс�
 
 - Источник ядра и модуля — репозиторий плагина
   (`G:\работа\arvexa-performance-overlay`).
-- Новые файлы: `assets/modules/third-party.js`, `assets/i18n/ru.js`,
-  `standalone/loader.js`, `tools/build-standalone.mjs`.
+- Новые файлы в `standalone/src/`: `loader.js`, `third-party-core.js`
+  (чистая логика, тесты на `node --test`), `third-party-section.js`,
+  `i18n-ru.js`, `prelude.js`; сборка `tools/build-standalone.mjs`.
 - `tools/build-standalone.mjs` склеивает и минифицирует ядро + модуль +
   словарь + CSS в `overlay.<hash>.js|css`, генерирует указатель
   `overlay.js`, минифицирует loader и кладёт всё в
   `G:\1212\arvexa-back\public\perf\` (+ текст вставки для страницы `/perf`).
-- `docs/`, `tools/`, `standalone/` и `assets/modules`/`assets/i18n` (до
-  включения в WP-версию) не должны попадать в пакет wp.org.
+- `docs/`, `tools/`, `standalone/` не должны попадать в пакет wp.org
+  (`.distignore` + `export-ignore`).
 - Модуль «Сторонние скрипты» в WordPress-версии пока выключен — включим
   отдельным релизом.
 
