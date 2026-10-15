@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="ru">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!--SNIPPET-->
+	<title>ARVEXA Perf harness</title>
+	<script src="http://127.0.0.3:4000/slow.js"></script>
+</head>
+<body style="font-family: sans-serif; padding: 24px;">
+	<h1>Тестовая страница</h1>
+	<p>Ожидается: «Не отвечают» — 127.0.0.2, подключил 127.0.0.3; «Блокируют отрисовку» — slow.js; через 10 с — «держат загрузку».</p>
+	<script>
+		// Inserted before the load event, like a tag manager would do.
+		var s = document.createElement('script');
+		s.src = 'http://127.0.0.3:4000/vendor.js';
+		document.head.appendChild(s);
+	</script>
+</body>
+</html>

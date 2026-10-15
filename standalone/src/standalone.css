@@ -1,0 +1,32 @@
+/* ARVEXA Perf standalone additions (third-party section). */
+
+#arvexa-performance-overlay-root .po-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin: 4px 0 6px;
+}
+
+#arvexa-performance-overlay-root .po-btn {
+	padding: 4px 9px;
+	border: 1px solid rgba(255, 255, 255, 0.16);
+	border-radius: 7px;
+	background: rgba(255, 255, 255, 0.06);
+	color: #e8eaef;
+	font: inherit;
+	cursor: pointer;
+}
+
+#arvexa-performance-overlay-root .po-btn:hover:not([disabled]) {
+	background: rgba(255, 255, 255, 0.12);
+}
+
+#arvexa-performance-overlay-root .po-btn[disabled] {
+	opacity: 0.55;
+	cursor: default;
+}
+
+#arvexa-performance-overlay-root .po-share-link {
+	color: #7cc4ff;
+	word-break: break-all;
+}
