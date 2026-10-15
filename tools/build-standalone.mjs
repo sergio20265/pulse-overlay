@@ -2,7 +2,7 @@
 // Builds the standalone ARVEXA Perf bundle (overlay core + third-party section)
 // and optionally copies it into the client portal (arvexa-back).
 // Usage: node tools/build-standalone.mjs [--api https://portal.arvexa.ru] [--portal G:/1212/arvexa-back | none]
-import { readFileSync, writeFileSync, mkdirSync, rmSync, readdirSync, copyFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, copyFileSync, existsSync, unlinkSync, rmdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { execSync } from 'node:child_process';
 import { join, dirname } from 'node:path';
@@ -42,8 +42,29 @@ const jsMin = minify(js, 'js');
 const cssMin = minify(css, 'css');
 const hash = createHash('sha256').update(jsMin).update(cssMin).digest('hex').slice(0, 10);
 
+// fs.rmSync({recursive}) silently does nothing on Node 24/Windows for non-ASCII
+// paths (G:\работа\...), so the tree is removed file by file.
+function removeTree(dir) {
+	if (!existsSync(dir)) {
+		return;
+	}
+	for (const entry of readdirSync(dir, { withFileTypes: true })) {
+		const p = join(dir, entry.name);
+		if (entry.isDirectory()) {
+			removeTree(p);
+		} else {
+			unlinkSync(p);
+		}
+	}
+	rmdirSync(dir);
+}
+
 const out = join(root, 'standalone/dist');
-rmSync(out, { recursive: true, force: true });
+removeTree(out);
+if (existsSync(out)) {
+	console.error(`could not clean ${out}`);
+	process.exit(1);
+}
 mkdirSync(join(out, 'static'), { recursive: true });
 writeFileSync(join(out, `static/overlay.${hash}.js`), jsMin);
 writeFileSync(join(out, `static/overlay.${hash}.css`), cssMin);
